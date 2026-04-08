@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>添加商品 - 福建名优特产管理系统</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        .sidebar-active {
+            background: #b91c1c;
+            color: white;
+            box-shadow: 0 4px 12px rgba(185, 28, 28, 0.2);
+        }
+        .magazine-card {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+            border: 1px solid #f1f5f9;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #b91c1c;
+            ring: 1px;
+            ring-color: #b91c1c;
+        }
+    </style>
+</head>
+<body class="flex">
+<!-- 侧边栏 -->
+<aside class="w-64 min-h-screen bg-white border-r border-slate-200 flex flex-col fixed left-0 top-0">
+<div class="p-8 border-b border-slate-50">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-3xl" icon="fluent-emoji:tea"></iconify-icon>
+<span class="text-xl font-bold text-red-800 tracking-tight">闽韵优选</span>
+</div>
+</div>
+<nav class="flex-1 p-4 space-y-2 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="dashboard.html">
+<iconify-icon class="text-xl" icon="solar:home-smile-bold-duotone"></iconify-icon>
+<span class="font-medium">控制台概览</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="admin-orders.html">
+<iconify-icon class="text-xl" icon="solar:cart-large-4-bold-duotone"></iconify-icon>
+<span class="font-medium">订单管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="warehouse-management.html">
+<iconify-icon class="text-xl" icon="solar:box-bold-duotone"></iconify-icon>
+<span class="font-medium">商品仓库</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 sidebar-active rounded-xl transition-all" href="add-product.html">
+<iconify-icon class="text-xl" icon="solar:add-circle-bold-duotone"></iconify-icon>
+<span class="font-medium">添加商品</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="#">
+<iconify-icon class="text-xl" icon="solar:users-group-rounded-bold-duotone"></iconify-icon>
+<span class="font-medium">会员管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="#">
+<iconify-icon class="text-xl" icon="solar:graph-bold-duotone"></iconify-icon>
+<span class="font-medium">营收分析</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-50">
+<div class="bg-red-50 p-4 rounded-2xl">
+<p class="text-xs text-red-700 font-bold mb-1">管理员: 陈嘉庚</p>
+<p class="text-[10px] text-red-600/70">上次登录: 2026-03-27 09:15</p>
+</div>
+<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="admin-login.html">
+<iconify-icon class="text-xl" icon="solar:logout-3-bold-duotone"></iconify-icon>
+<span class="font-medium">安全退出</span>
+</a>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="ml-64 flex-1 min-h-screen p-8">
+<!-- 头部 -->
+<header class="flex justify-between items-center mb-8">
+<div>
+<h1 class="text-2xl font-bold text-slate-800">添加新商品</h1>
+<p class="text-slate-500 text-sm mt-1">录入福建名优特产，丰富线上货架</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-3 bg-white p-1 pr-4 rounded-full magazine-card">
+<img alt="Admin Avatar" class="w-8 h-8 rounded-full" src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin"/>
+<span class="text-sm font-semibold text-slate-700">陈主管</span>
+</div>
+</div>
+</header>
+<!-- 表单卡片 -->
+<section class="bg-white rounded-3xl magazine-card overflow-hidden">
+<form class="p-8 space-y-6" id="addProductForm">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- 左侧：基本信息 -->
+<div class="space-y-6">
+<div>
+<label class="block text-sm font-bold text-slate-700 mb-2">商品名称</label>
+<input class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-red-600 transition-all" placeholder="例如：福州同利肉燕" required="" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-bold text-slate-700 mb-2">商品类别</label>
+<select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-red-600 transition-all bg-white" required="">
+<option value="">请选择类别</option>
+<option value="鱼丸">鱼丸</option>
+<option value="肉燕">肉燕</option>
+<option value="笋包">笋包</option>
+<option value="其他特产">其他特产</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-bold text-slate-700 mb-2">商品描述</label>
+<textarea class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-red-600 transition-all" placeholder="请输入商品的详细介绍、口感、食用方法等..." required="" rows="4"></textarea>
+</div>
+<div>
+<label class="block text-sm font-bold text-slate-700 mb-2">商品图片</label>
+<div class="border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100 transition-all cursor-pointer">
+<iconify-icon class="text-4xl text-slate-300 mb-2" icon="solar:camera-add-bold-duotone"></iconify-icon>
+<span class="text-sm text-slate-400">点击上传或拖拽图片至此</span>
+<span class="text-[10px] text-slate-400 mt-1">支持 JPG, PNG, WEBP (最大 2MB)</span>
+</div>
+</div>
+</div>
+<!-- 右侧：规格与价格 -->
+<div class="space-y-6">
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-bold text-slate-700 mb-2">规格设置</label>
+<input class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-red-600 transition-all" placeholder="如：500g/包" required="" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-bold text-slate-700 mb-2">库存数量</label>
+<input class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-red-600 transition-all" placeholder="0" required="" type="number"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-bold text-slate-700 mb-2">原价 (￥)</label>
+<input class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-red-600 transition-all" placeholder="0.00" required="" step="0.01" type="number"/>
+</div>
+<div>
+<label class="block text-sm font-bold text-slate-700 mb-2">优惠价 (￥)</label>
+<input class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-red-600 transition-all" placeholder="0.00" step="0.01" type="number"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-bold text-slate-700 mb-2">商品状态</label>
+<div class="flex gap-4">
+<label class="flex-1 flex items-center justify-center gap-2 p-3 border border-slate-200 rounded-xl cursor-pointer hover:border-red-600 transition-all has-[:checked]:border-red-600 has-[:checked]:bg-red-50">
+<input checked="" class="hidden" name="status" type="radio" value="在售"/>
+<span class="text-sm font-bold text-slate-600">在售</span>
+</label>
+<label class="flex-1 flex items-center justify-center gap-2 p-3 border border-slate-200 rounded-xl cursor-pointer hover:border-red-600 transition-all has-[:checked]:border-red-600 has-[:checked]:bg-red-50">
+<input class="hidden" name="status" type="radio" value="缺货"/>
+<span class="text-sm font-bold text-slate-600">缺货</span>
+</label>
+<label class="flex-1 flex items-center justify-center gap-2 p-3 border border-slate-200 rounded-xl cursor-pointer hover:border-red-600 transition-all has-[:checked]:border-red-600 has-[:checked]:bg-red-50">
+<input class="hidden" name="status" type="radio" value="下架"/>
+<span class="text-sm font-bold text-slate-600">下架</span>
+</label>
+</div>
+</div>
+<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 mt-4">
+<h4 class="text-sm font-bold text-blue-800 mb-2 flex items-center gap-2">
+<iconify-icon icon="solar:info-circle-bold-duotone"></iconify-icon>
+                                录入说明
+                            </h4>
+<p class="text-xs text-blue-700/70 leading-relaxed">
+                                请确保商品图片清晰且无水印，描述准确。特产商品请注明原产地及保质期，冷链配送商品请在描述中特别标注。
+                            </p>
+</div>
+</div>
+</div>
+<!-- 操作区域 -->
+<div class="pt-8 border-t border-slate-100 flex justify-end gap-4">
+<button class="px-8 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-all" type="reset">重置表单</button>
+<button class="px-12 py-3 bg-red-700 text-white rounded-xl font-bold hover:bg-red-800 shadow-lg shadow-red-700/20 transition-all" type="submit">确认添加商品</button>
+</div>
+</form>
+</section>
+</main>
+<script>
+        document.getElementById('addProductForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var btn=this.querySelector('button[type=submit]');
+            btn.textContent='提交中...';btn.disabled=true;
+            // Validate required fields
+            var name=this.querySelector('input[placeholder*="肉燕"]');
+            if(name&&!name.value.trim()){
+                btn.textContent='确认添加商品';btn.disabled=false;
+                name.style.borderColor='#b91c1c';name.focus();return;
+            }
+            setTimeout(function(){
+                // Show success toast then redirect
+                var t=document.createElement('div');
+                t.style.cssText='position:fixed;top:1.5rem;right:1.5rem;z-index:9999;padding:.75rem 1.25rem;border-radius:.75rem;background:#15803d;color:#fff;font-weight:700;font-size:.85rem;';
+                t.textContent='✓ 商品已成功添加并上架';
+                document.body.appendChild(t);
+                setTimeout(function(){window.location.href='warehouse-management.html';},1200);
+            },700);
+        });
+        // Image upload preview
+        var uploadZone=document.querySelector('.border-dashed');
+        if(uploadZone){
+            var fileInput=document.createElement('input');
+            fileInput.type='file';fileInput.accept='image/*';fileInput.style.display='none';
+            document.body.appendChild(fileInput);
+            uploadZone.addEventListener('click',function(){fileInput.click();});
+            fileInput.addEventListener('change',function(){
+                if(this.files&&this.files[0]){
+                    var reader=new FileReader();
+                    reader.onload=function(e){
+                        uploadZone.innerHTML='<img src="'+e.target.result+'" class="w-32 h-32 object-cover rounded-xl mx-auto" alt="预览"/><p class="text-xs text-green-600 mt-2 font-bold">图片已上传</p>';
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

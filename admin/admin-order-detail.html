@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>订单详情 - 福建名优特产管理系统</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        .magazine-card {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+            border: 1px solid #f1f5f9;
+        }
+        .sidebar-active {
+            background: #b91c1c;
+            color: white;
+            box-shadow: 0 4px 12px rgba(185, 28, 28, 0.2);
+        }
+    </style>
+</head>
+<body class="flex">
+<!-- 侧边栏 -->
+<aside class="w-64 min-h-screen bg-white border-r border-slate-200 flex flex-col fixed left-0 top-0">
+<div class="p-8 border-b border-slate-50">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-3xl" icon="fluent-emoji:tea"></iconify-icon>
+<span class="text-xl font-bold text-red-800 tracking-tight">闽韵优选</span>
+</div>
+</div>
+<nav class="flex-1 p-4 space-y-2 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="dashboard.html">
+<iconify-icon class="text-xl" icon="solar:home-smile-bold-duotone"></iconify-icon>
+<span class="font-medium">控制台概览</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 sidebar-active rounded-xl transition-all" href="admin-orders.html">
+<iconify-icon class="text-xl" icon="solar:cart-large-4-bold-duotone"></iconify-icon>
+<span class="font-medium">订单管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="warehouse-management.html">
+<iconify-icon class="text-xl" icon="solar:box-bold-duotone"></iconify-icon>
+<span class="font-medium">商品仓库</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="add-product.html">
+<iconify-icon class="text-xl" icon="solar:add-circle-bold-duotone"></iconify-icon>
+<span class="font-medium">添加商品</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="#">
+<iconify-icon class="text-xl" icon="solar:users-group-rounded-bold-duotone"></iconify-icon>
+<span class="font-medium">会员管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="#">
+<iconify-icon class="text-xl" icon="solar:graph-bold-duotone"></iconify-icon>
+<span class="font-medium">营收分析</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-50">
+<div class="bg-red-50 p-4 rounded-2xl">
+<p class="text-xs text-red-700 font-bold mb-1">管理员: 陈嘉庚</p>
+<p class="text-[10px] text-red-600/70">当前日期: 2026-03-27</p>
+</div>
+<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="admin-login.html">
+<iconify-icon class="text-xl" icon="solar:logout-3-bold-duotone"></iconify-icon>
+<span class="font-medium">安全退出</span>
+</a>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="ml-64 flex-1 min-h-screen p-8 bg-slate-50">
+<div class="max-w-5xl mx-auto">
+<!-- 顶部导航 -->
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-4">
+<a class="w-10 h-10 flex items-center justify-center bg-white rounded-full magazine-card text-slate-600 hover:text-red-700 transition-all active:scale-95" href="admin-orders.html">
+<iconify-icon class="text-xl" icon="solar:alt-arrow-left-linear"></iconify-icon>
+</a>
+<div>
+<div class="flex items-center gap-3">
+<h1 class="text-2xl font-bold text-slate-800">订单详情</h1>
+<span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">待处理</span>
+</div>
+<p class="text-slate-500 text-sm mt-1">订单编号: #ORD-20260327001 · 下单时间: 2026-03-27 10:24</p>
+</div>
+</div>
+<!-- 操作按钮组 (固定位置，根据配送方式动态高亮) -->
+<div class="flex items-center gap-3">
+<button class="px-6 py-2.5 bg-red-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-700/20 hover:bg-red-800 transition-all flex items-center gap-2" id="btnShip" onclick="updateStatus('shipped')">
+<iconify-icon icon="solar:delivery-bold"></iconify-icon>
+                    标记为已发货
+                </button>
+<button class="px-6 py-2.5 bg-green-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-600/20 hover:bg-green-700 transition-all flex items-center gap-2" id="btnDone" onclick="updateStatus('done')">
+<iconify-icon icon="solar:check-circle-bold"></iconify-icon>
+                    标记为已完成
+                </button>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-8">
+<!-- 左侧：主要信息 -->
+<div class="col-span-2 space-y-8">
+<!-- 商品明细 -->
+<section class="bg-white rounded-3xl magazine-card overflow-hidden">
+<div class="p-6 border-b border-slate-50 flex items-center gap-2">
+<iconify-icon class="text-xl text-red-700" icon="solar:box-minimalistic-bold-duotone"></iconify-icon>
+<h2 class="font-bold text-slate-800">商品明细</h2>
+</div>
+<div class="p-0">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+<th class="px-6 py-4">商品信息</th>
+<th class="px-6 py-4 text-center">单价</th>
+<th class="px-6 py-4 text-center">数量</th>
+<th class="px-6 py-4 text-right">合计</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 bg-slate-100 rounded-xl overflow-hidden flex-shrink-0">
+<img alt="武夷大红袍" class="w-full h-full object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/6c19d3e0d28c48b8b6ef1779113ec3a4.jpg"/>
+</div>
+<div>
+<div class="font-bold text-slate-800 text-sm">武夷岩茶特级大红袍</div>
+<div class="text-xs text-slate-400 mt-1">规格: 500g 精装木盒</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-center text-sm text-slate-600 font-medium">￥880.00</td>
+<td class="px-6 py-5 text-center text-sm text-slate-600">x 1</td>
+<td class="px-6 py-5 text-right text-sm font-bold text-slate-800">￥880.00</td>
+</tr>
+<tr class="group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 bg-slate-100 rounded-xl overflow-hidden flex-shrink-0">
+<img alt="古田银耳" class="w-full h-full object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/6ae6bfbab846491ab3341cc24030b16e.jpg"/>
+</div>
+<div>
+<div class="font-bold text-slate-800 text-sm">古田精品丑耳/白木耳</div>
+<div class="text-xs text-slate-400 mt-1">规格: 250g 礼品盒装</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-center text-sm text-slate-600 font-medium">￥200.00</td>
+<td class="px-6 py-5 text-center text-sm text-slate-600">x 2</td>
+<td class="px-6 py-5 text-right text-sm font-bold text-slate-800">￥400.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-6 bg-slate-50/50 border-t border-slate-50 flex flex-col items-end gap-2">
+<div class="flex justify-between w-48 text-sm">
+<span class="text-slate-500">商品总计:</span>
+<span class="text-slate-800 font-medium">￥1,280.00</span>
+</div>
+<div class="flex justify-between w-48 text-sm">
+<span class="text-slate-500">冷链运费:</span>
+<span class="text-slate-800 font-medium">￥0.00 (包邮)</span>
+</div>
+<div class="flex justify-between w-48 pt-2 border-t border-slate-200">
+<span class="text-slate-800 font-bold">应付总额:</span>
+<span class="text-red-700 font-extrabold text-xl">￥1,280.00</span>
+</div>
+</div>
+</section>
+<!-- 配送信息 (动态切换显示) -->
+<section class="grid grid-cols-2 gap-6">
+<!-- 情况 A: 冷链配送 -->
+<div class="bg-white p-6 rounded-3xl magazine-card border-l-4 border-blue-500">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center">
+<iconify-icon class="text-xl" icon="solar:snow-linear"></iconify-icon>
+</div>
+<div>
+<h3 class="font-bold text-slate-800">冷链配送信息</h3>
+<p class="text-[10px] text-blue-500 font-bold tracking-widest uppercase mt-0.5">Cold Chain Logistic</p>
+</div>
+</div>
+<div class="space-y-4 text-sm">
+<div class="flex flex-col">
+<span class="text-slate-400 text-xs mb-1">收货地址</span>
+<span class="text-slate-700 font-medium leading-relaxed">福建省福州市鼓楼区三坊七巷南后街 88 号 2 单元 301</span>
+</div>
+<div class="flex justify-between border-t border-slate-50 pt-3">
+<div class="flex flex-col">
+<span class="text-slate-400 text-xs mb-1">联系电话</span>
+<span class="text-slate-700 font-bold">138 0000 8899</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-slate-400 text-xs mb-1">期望时效</span>
+<span class="text-slate-700 font-medium italic">次日达</span>
+</div>
+</div>
+<div class="bg-blue-50/50 p-3 rounded-xl border border-blue-100">
+<span class="text-blue-800 font-bold text-xs block mb-1">配送备注:</span>
+<p class="text-blue-600 text-xs leading-relaxed">大红袍属于易碎包装，请提醒派送员轻放，确保温控在 18-22 度。</p>
+</div>
+</div>
+</div>
+<!-- 情况 B: 门店自取 (此处模拟备选) -->
+<div class="bg-white p-6 rounded-3xl magazine-card opacity-50 border-slate-200 grayscale">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center">
+<iconify-icon class="text-xl" icon="solar:shop-linear"></iconify-icon>
+</div>
+<div>
+<h3 class="font-bold text-slate-400">门店自取信息</h3>
+<p class="text-[10px] text-slate-300 font-bold tracking-widest uppercase mt-0.5">Self-pickup</p>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center h-24 text-slate-400">
+<iconify-icon class="text-2xl mb-2" icon="solar:lock-bold"></iconify-icon>
+<span class="text-xs italic">非自取订单不显示此信息</span>
+</div>
+</div>
+</section>
+</div>
+<!-- 右侧：侧边辅助信息 -->
+<div class="space-y-8">
+<!-- 客户信息 -->
+<section class="bg-white p-8 rounded-3xl magazine-card relative overflow-hidden">
+<div class="absolute -top-6 -right-6 w-24 h-24 bg-red-50 rounded-full -z-0"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-4 mb-8">
+<img alt="User" class="w-14 h-14 rounded-2xl border-2 border-white shadow-sm" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/27610bc3341c470facb05b000dbb98b1.jpg"/>
+<div>
+<h3 class="font-bold text-slate-800 text-lg">林先生</h3>
+<p class="text-xs text-slate-400">注册会员 (Lv.3 黄金会员)</p>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between text-sm">
+<span class="text-slate-500 flex items-center gap-2">
+<iconify-icon icon="solar:phone-calling-linear"></iconify-icon>
+                                    电话
+                                </span>
+<span class="text-slate-800 font-bold">138 0000 8899</span>
+</div>
+<div class="flex items-center justify-between text-sm">
+<span class="text-slate-500 flex items-center gap-2">
+<iconify-icon icon="solar:history-linear"></iconify-icon>
+                                    累计消费
+                                </span>
+<span class="text-slate-800 font-bold">￥15,620.00</span>
+</div>
+<div class="flex items-center justify-between text-sm">
+<span class="text-slate-500 flex items-center gap-2">
+<iconify-icon icon="solar:ticket-linear"></iconify-icon>
+                                    退货率
+                                </span>
+<span class="text-green-600 font-bold">0.0%</span>
+</div>
+</div>
+<button class="w-full mt-8 py-3 bg-slate-50 text-slate-600 rounded-xl text-sm font-bold hover:bg-slate-100 transition-colors flex items-center justify-center gap-2">
+<iconify-icon icon="solar:chat-line-linear"></iconify-icon>
+                            联系客户
+                        </button>
+</div>
+</section>
+<!-- 操作日志 -->
+<section class="bg-white p-6 rounded-3xl magazine-card">
+<div class="flex items-center gap-2 mb-6">
+<iconify-icon class="text-xl text-slate-400" icon="solar:history-bold-duotone"></iconify-icon>
+<h2 class="font-bold text-slate-800">操作日志</h2>
+</div>
+<div class="space-y-6 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100">
+<div class="flex gap-4 relative">
+<div class="w-6 h-6 bg-red-100 text-red-700 rounded-full flex items-center justify-center z-10">
+<iconify-icon class="text-xs" icon="solar:add-circle-bold"></iconify-icon>
+</div>
+<div>
+<p class="text-sm text-slate-700 font-bold">客户下单支付</p>
+<p class="text-[10px] text-slate-400 mt-1">2026-03-27 10:24:15</p>
+</div>
+</div>
+<div class="flex gap-4 relative">
+<div class="w-6 h-6 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center z-10">
+<iconify-icon class="text-xs" icon="solar:magnifer-bold"></iconify-icon>
+</div>
+<div>
+<p class="text-sm text-slate-500">管理员查看了订单</p>
+<p class="text-[10px] text-slate-400 mt-1">2026-03-27 11:05:02 · 由 admin_fj01 操作</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 针对门店自取的模拟逻辑按钮 -->
+<section class="bg-red-50 p-6 rounded-3xl border-2 border-dashed border-red-200">
+<h4 class="text-red-700 font-bold text-sm mb-4 flex items-center gap-2">
+<iconify-icon icon="solar:info-circle-bold"></iconify-icon>
+                        自取专用操作
+                    </h4>
+<button class="w-full py-3 bg-white text-red-700 border border-red-200 rounded-xl text-sm font-bold hover:bg-red-700 hover:text-white transition-all" id="btnPickup" onclick="updateStatus('pickup')">
+                        标记为已自取
+                    </button>
+<p class="text-[10px] text-red-500/60 mt-3 text-center">只有选择“门店自取”的订单需执行此操作</p>
+</section>
+</div>
+</div>
+</div>
+</main>
+<script>
+function updateStatus(type){
+  var badge=document.querySelector('.px-3.py-1.bg-red-100');
+  var now=new Date();
+  var ts=now.getFullYear()+'-'+(now.getMonth()+1).toString().padStart(2,'0')+'-'+now.getDate().toString().padStart(2,'0')+' '+now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
+  var logContainer=document.querySelector('.space-y-6.relative');
+  var newLog=document.createElement('div');newLog.className='flex gap-4 relative';
+
+  if(type==='shipped'){
+    if(badge){badge.textContent='已发货';badge.className='px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold';}
+    document.getElementById('btnShip').disabled=true;document.getElementById('btnShip').classList.add('opacity-50');
+    newLog.innerHTML='<div class="w-6 h-6 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center z-10"><iconify-icon class="text-xs" icon="solar:delivery-bold"></iconify-icon></div><div><p class="text-sm text-slate-700 font-bold">已标记为发货</p><p class="text-[10px] text-slate-400 mt-1">'+ts+' · 由 admin_fj01 操作</p></div>';
+    showToast('✓ 订单已标记为已发货','blue');
+  } else if(type==='done'){
+    if(badge){badge.textContent='已完成';badge.className='px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold';}
+    document.getElementById('btnShip').disabled=true;document.getElementById('btnShip').classList.add('opacity-50');
+    document.getElementById('btnDone').disabled=true;document.getElementById('btnDone').classList.add('opacity-50');
+    newLog.innerHTML='<div class="w-6 h-6 bg-green-100 text-green-700 rounded-full flex items-center justify-center z-10"><iconify-icon class="text-xs" icon="solar:check-circle-bold"></iconify-icon></div><div><p class="text-sm text-slate-700 font-bold">订单标记为已完成</p><p class="text-[10px] text-slate-400 mt-1">'+ts+' · 由 admin_fj01 操作</p></div>';
+    showToast('✓ 订单已完成','green');
+  } else if(type==='pickup'){
+    if(badge){badge.textContent='已自取';badge.className='px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold';}
+    document.getElementById('btnPickup').disabled=true;document.getElementById('btnPickup').classList.add('opacity-50');
+    newLog.innerHTML='<div class="w-6 h-6 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center z-10"><iconify-icon class="text-xs" icon="solar:shop-bold"></iconify-icon></div><div><p class="text-sm text-slate-700 font-bold">客户现场自取完成</p><p class="text-[10px] text-slate-400 mt-1">'+ts+' · 由 admin_fj01 操作</p></div>';
+    showToast('✓ 已标记为自取完成','purple');
+  }
+  if(logContainer)logContainer.appendChild(newLog);
+}
+
+function showToast(msg,color){
+  var t=document.getElementById('adminToast');
+  if(!t){t=document.createElement('div');t.id='adminToast';t.style.cssText='position:fixed;top:1.5rem;right:1.5rem;z-index:9999;padding:.75rem 1.25rem;border-radius:.75rem;font-weight:700;font-size:.85rem;opacity:0;transition:all .3s;pointer-events:none;';document.body.appendChild(t);}
+  var colors={blue:'background:#1d4ed8;color:#fff',green:'background:#15803d;color:#fff',purple:'background:#7c3aed;color:#fff'};
+  t.style.cssText=t.style.cssText.replace(/background:[^;]+;color:[^;]+/,'');
+  Object.assign(t.style,{background:color==='blue'?'#1d4ed8':color==='green'?'#15803d':'#7c3aed',color:'#fff'});
+  t.textContent=msg;t.style.opacity='1';t.style.transform='translateY(0)';
+  setTimeout(function(){t.style.opacity='0';},2500);
+}
+</script>
+</body>
+</html>

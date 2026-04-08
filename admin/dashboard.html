@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>控制台概览 - 福建名优特产管理系统</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        .sidebar-active {
+            background: #b91c1c;
+            color: white;
+            box-shadow: 0 4px 12px rgba(185, 28, 28, 0.2);
+        }
+        .magazine-card {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+            border: 1px solid #f1f5f9;
+        }
+        .stat-card {
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="flex">
+<!-- 侧边栏 -->
+<aside class="w-64 min-h-screen bg-white border-r border-slate-200 flex flex-col fixed left-0 top-0">
+<div class="p-8 border-b border-slate-50">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-3xl" icon="fluent-emoji:tea"></iconify-icon>
+<span class="text-xl font-bold text-red-800 tracking-tight">闽韵优选</span>
+</div>
+</div>
+<nav class="flex-1 p-4 space-y-2 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 sidebar-active rounded-xl transition-all" href="dashboard.html">
+<iconify-icon class="text-xl" icon="solar:home-smile-bold-duotone"></iconify-icon>
+<span class="font-medium">控制台概览</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="admin-orders.html">
+<iconify-icon class="text-xl" icon="solar:cart-large-4-bold-duotone"></iconify-icon>
+<span class="font-medium">订单管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="warehouse-management.html">
+<iconify-icon class="text-xl" icon="solar:box-bold-duotone"></iconify-icon>
+<span class="font-medium">商品仓库</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="add-product.html">
+<iconify-icon class="text-xl" icon="solar:add-circle-bold-duotone"></iconify-icon>
+<span class="font-medium">添加商品</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="#">
+<iconify-icon class="text-xl" icon="solar:users-group-rounded-bold-duotone"></iconify-icon>
+<span class="font-medium">会员管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="#">
+<iconify-icon class="text-xl" icon="solar:graph-bold-duotone"></iconify-icon>
+<span class="font-medium">营收分析</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-50">
+<div class="bg-red-50 p-4 rounded-2xl">
+<p class="text-xs text-red-700 font-bold mb-1">管理员: 陈嘉庚</p>
+<p class="text-[10px] text-red-600/70">上次登录: <span id="liveClock">2026-04-07 08:30</span></p>
+</div>
+<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="admin-login.html">
+<iconify-icon class="text-xl" icon="solar:logout-3-bold-duotone"></iconify-icon>
+<span class="font-medium">安全退出</span>
+</a>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="ml-64 flex-1 min-h-screen p-8">
+<!-- 头部 -->
+<header class="flex justify-between items-center mb-8">
+<div>
+<h1 class="text-2xl font-bold text-slate-800">控制台概览</h1>
+<p class="text-slate-500 text-sm mt-1">欢迎回来，今天是 2026年03月27日。这是您今日的业务简报。</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex gap-2">
+<a class="flex items-center gap-2 px-4 py-2 bg-red-700 text-white rounded-lg text-sm font-bold hover:bg-red-800 transition-colors" href="admin-orders.html">
+<iconify-icon icon="solar:cart-large-4-bold-duotone"></iconify-icon>
+                        查看所有订单
+                    </a>
+<a class="flex items-center gap-2 px-4 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg text-sm font-bold hover:bg-slate-50 transition-colors" href="add-product.html">
+<iconify-icon icon="solar:add-circle-bold-duotone"></iconify-icon>
+                        添加商品
+                    </a>
+<button class="flex items-center gap-2 px-4 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg text-sm font-bold hover:bg-slate-50 transition-colors">
+<iconify-icon icon="solar:graph-bold-duotone"></iconify-icon>
+                        查看营收分析
+                    </button>
+</div>
+<div class="h-8 w-[1px] bg-slate-200 mx-2"></div>
+<button class="w-10 h-10 flex items-center justify-center bg-white rounded-full magazine-card text-slate-600 hover:text-red-700 transition-colors relative">
+<iconify-icon class="text-xl" icon="solar:bell-bing-bold-duotone"></iconify-icon>
+<span class="absolute top-2 right-2 w-2 h-2 bg-red-600 rounded-full border-2 border-white"></span>
+</button>
+</div>
+</header>
+<!-- 数据概览卡片 -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="bg-white p-6 rounded-2xl magazine-card stat-card">
+<div class="flex items-center justify-between mb-4">
+<div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+<iconify-icon class="text-2xl" icon="solar:cart-check-bold-duotone"></iconify-icon>
+</div>
+<span class="text-green-500 text-xs font-bold flex items-center gap-1">
+<iconify-icon icon="solar:trend-up-bold"></iconify-icon> +12%
+                    </span>
+</div>
+<p class="text-slate-500 text-sm font-medium">今日订单数</p>
+<h3 class="text-2xl font-bold text-slate-800 mt-1">128</h3>
+</div>
+<div class="bg-white p-6 rounded-2xl magazine-card stat-card">
+<div class="flex items-center justify-between mb-4">
+<div class="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center">
+<iconify-icon class="text-2xl" icon="solar:hand-money-bold-duotone"></iconify-icon>
+</div>
+<span class="text-green-500 text-xs font-bold flex items-center gap-1">
+<iconify-icon icon="solar:trend-up-bold"></iconify-icon> +8.4%
+                    </span>
+</div>
+<p class="text-slate-500 text-sm font-medium">今日营收</p>
+<h3 class="text-2xl font-bold text-slate-800 mt-1">￥24,580.00</h3>
+</div>
+<div class="bg-white p-6 rounded-2xl magazine-card stat-card">
+<div class="flex items-center justify-between mb-4">
+<div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
+<iconify-icon class="text-2xl" icon="solar:clock-circle-bold-duotone"></iconify-icon>
+</div>
+<span class="text-amber-500 text-xs font-bold">待处理</span>
+</div>
+<p class="text-slate-500 text-sm font-medium">待处理订单</p>
+<h3 class="text-2xl font-bold text-slate-800 mt-1">15</h3>
+</div>
+<div class="bg-white p-6 rounded-2xl magazine-card stat-card">
+<div class="flex items-center justify-between mb-4">
+<div class="w-12 h-12 bg-red-50 text-red-600 rounded-xl flex items-center justify-center">
+<iconify-icon class="text-2xl" icon="solar:fire-bold-duotone"></iconify-icon>
+</div>
+<span class="text-slate-400 text-xs font-bold">Top 3</span>
+</div>
+<p class="text-slate-500 text-sm font-medium">热销商品</p>
+<div class="mt-1 flex flex-wrap gap-1">
+<span class="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold">武夷大红袍</span>
+<span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">福州肉燕</span>
+<span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">古田银耳</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- 趋势图 -->
+<div class="lg:col-span-2 bg-white p-6 rounded-2xl magazine-card">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold text-slate-800">最近7天订单趋势</h3>
+<select class="text-xs border-none bg-slate-50 rounded-lg p-2 font-bold text-slate-500 outline-none">
+<option>按天统计</option>
+<option>按周统计</option>
+</select>
+</div>
+<div class="h-64">
+<canvas id="orderTrendChart"></canvas>
+</div>
+</div>
+<!-- 库存预警 -->
+<div class="bg-white p-6 rounded-2xl magazine-card">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold text-slate-800">库存预警</h3>
+<a class="text-red-700 text-xs font-bold hover:underline" href="warehouse-management.html">去补货</a>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1594631252845-29fc458631b6?w=100&amp;h=100&amp;fit=crop"/>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-bold text-slate-700 truncate">安溪铁观音 特级</h4>
+<div class="flex items-center justify-between mt-1">
+<span class="text-xs text-slate-400">剩余: 5 盒</span>
+<span class="text-[10px] text-red-600 font-bold bg-red-50 px-2 rounded">严重不足</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1515233214151-698e4f16a04a?w=100&amp;h=100&amp;fit=crop"/>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-bold text-slate-700 truncate">福州同利肉燕</h4>
+<div class="flex items-center justify-between mt-1">
+<span class="text-xs text-slate-400">剩余: 12 袋</span>
+<span class="text-[10px] text-orange-600 font-bold bg-orange-50 px-2 rounded">库存偏低</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=100&amp;h=100&amp;fit=crop"/>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-bold text-slate-700 truncate">古田干银耳 250g</h4>
+<div class="flex items-center justify-between mt-1">
+<span class="text-xs text-slate-400">剩余: 18 包</span>
+<span class="text-[10px] text-orange-600 font-bold bg-orange-50 px-2 rounded">库存偏低</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1582213776823-5851cf4d3c88?w=100&amp;h=100&amp;fit=crop"/>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-bold text-slate-700 truncate">武夷山大红袍 礼盒</h4>
+<div class="flex items-center justify-between mt-1">
+<span class="text-xs text-slate-400">剩余: 8 盒</span>
+<span class="text-[10px] text-red-600 font-bold bg-red-50 px-2 rounded">严重不足</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1627916607164-7b20241db935?w=100&amp;h=100&amp;fit=crop"/>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-bold text-slate-700 truncate">泉州面线糊 10份装</h4>
+<div class="flex items-center justify-between mt-1">
+<span class="text-xs text-slate-400">剩余: 22 份</span>
+<span class="text-[10px] text-orange-600 font-bold bg-orange-50 px-2 rounded">库存偏低</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 最新订单 -->
+<div class="mt-8 bg-white rounded-2xl magazine-card overflow-hidden">
+<div class="p-6 border-b border-slate-50 flex justify-between items-center">
+<h3 class="text-lg font-bold text-slate-800">最新订单</h3>
+<a class="text-red-700 text-xs font-bold hover:underline" href="admin-orders.html">查看全部订单</a>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-slate-50/50">
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">订单号</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">客户姓名</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">下单时间</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">金额</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">状态</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4 font-bold text-slate-700 text-sm">#ORD-20260327124</td>
+<td class="px-6 py-4 text-slate-700 font-medium text-sm">林语棠</td>
+<td class="px-6 py-4 text-slate-500 text-xs">2026-03-27 10:45</td>
+<td class="px-6 py-4 font-bold text-red-700 text-sm">￥528.00</td>
+<td class="px-6 py-4 text-center">
+<span class="px-2 py-1 bg-amber-100 text-amber-700 rounded-full text-[10px] font-bold">待发货</span>
+</td>
+<td class="px-6 py-4 text-center">
+<a class="text-red-700 hover:underline text-xs font-bold" href="admin-order-detail.html">查看详情</a>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4 font-bold text-slate-700 text-sm">#ORD-20260327123</td>
+<td class="px-6 py-4 text-slate-700 font-medium text-sm">张曼钰</td>
+<td class="px-6 py-4 text-slate-500 text-xs">2026-03-27 10:32</td>
+<td class="px-6 py-4 font-bold text-red-700 text-sm">￥199.00</td>
+<td class="px-6 py-4 text-center">
+<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold">已支付</span>
+</td>
+<td class="px-6 py-4 text-center">
+<a class="text-red-700 hover:underline text-xs font-bold" href="admin-order-detail.html">查看详情</a>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4 font-bold text-slate-700 text-sm">#ORD-20260327122</td>
+<td class="px-6 py-4 text-slate-700 font-medium text-sm">陈奕迅</td>
+<td class="px-6 py-4 text-slate-500 text-xs">2026-03-27 10:15</td>
+<td class="px-6 py-4 font-bold text-red-700 text-sm">￥1,280.00</td>
+<td class="px-6 py-4 text-center">
+<span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold">已完成</span>
+</td>
+<td class="px-6 py-4 text-center">
+<a class="text-red-700 hover:underline text-xs font-bold" href="admin-order-detail.html">查看详情</a>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4 font-bold text-slate-700 text-sm">#ORD-20260327121</td>
+<td class="px-6 py-4 text-slate-700 font-medium text-sm">王佳乐</td>
+<td class="px-6 py-4 text-slate-500 text-xs">2026-03-27 09:58</td>
+<td class="px-6 py-4 font-bold text-red-700 text-sm">￥45.00</td>
+<td class="px-6 py-4 text-center">
+<span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold">已完成</span>
+</td>
+<td class="px-6 py-4 text-center">
+<a class="text-red-700 hover:underline text-xs font-bold" href="admin-order-detail.html">查看详情</a>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4 font-bold text-slate-700 text-sm">#ORD-20260327120</td>
+<td class="px-6 py-4 text-slate-700 font-medium text-sm">李思思</td>
+<td class="px-6 py-4 text-slate-500 text-xs">2026-03-27 09:30</td>
+<td class="px-6 py-4 font-bold text-red-700 text-sm">￥850.00</td>
+<td class="px-6 py-4 text-center">
+<span class="px-2 py-1 bg-slate-100 text-slate-700 rounded-full text-[10px] font-bold">已关闭</span>
+</td>
+<td class="px-6 py-4 text-center">
+<a class="text-red-700 hover:underline text-xs font-bold" href="admin-order-detail.html">查看详情</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<script>
+        // 渲染趋势图
+        const ctx = document.getElementById('orderTrendChart').getContext('2d');
+        const orderTrendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['03-21', '03-22', '03-23', '03-24', '03-25', '03-26', '03-27'],
+                datasets: [{
+                    label: '订单量',
+                    data: [85, 92, 110, 105, 125, 140, 128],
+                    borderColor: '#b91c1c',
+                    backgroundColor: 'rgba(185, 28, 28, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#b91c1c',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: '#1e293b',
+                        titleFont: { size: 12, weight: 'bold' },
+                        bodyFont: { size: 12 },
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f1f5f9'
+                        },
+                        ticks: {
+                            color: '#94a3b8',
+                            font: { size: 10 }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#94a3b8',
+                            font: { size: 10 }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+<script>
+// Live clock in sidebar
+function updateClock(){
+  var now=new Date();
+  var pad=function(n){return n.toString().padStart(2,'0');};
+  var s=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes());
+  var el=document.getElementById('liveClock');
+  if(el)el.textContent=s;
+}
+setInterval(updateClock,10000);updateClock();
+
+// Stat cards → link to orders
+document.querySelectorAll('.stat-card').forEach(function(card){
+  card.style.cursor='pointer';
+  card.addEventListener('click',function(){window.location.href='admin-orders.html';});
+});
+
+// Animate numbers on load
+function animateNum(el,target,prefix,suffix,duration){
+  var start=0;var step=target/60;var cur=0;
+  var interval=setInterval(function(){
+    cur=Math.min(cur+step,target);
+    el.textContent=prefix+(cur>=1000?Math.round(cur).toLocaleString():Math.round(cur))+suffix;
+    if(cur>=target)clearInterval(interval);
+  },duration/60);
+}
+var statNums=document.querySelectorAll('.stat-card .text-3xl, .stat-card .text-4xl');
+statNums.forEach(function(el){
+  var raw=el.textContent.replace(/[^0-9.]/g,'');
+  var num=parseFloat(raw);
+  if(!isNaN(num)&&num>0){
+    var prefix=el.textContent.includes('￥')?'￥':'';
+    var suffix=el.textContent.replace(/[0-9,￥.]/g,'');
+    animateNum(el,num,prefix,suffix,800);
+  }
+});
+</script>
+</body>
+</html>

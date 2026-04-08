@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>订单列表 - 福建名优特产管理系统</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        .sidebar-active {
+            background: #b91c1c;
+            color: white;
+            box-shadow: 0 4px 12px rgba(185, 28, 28, 0.2);
+        }
+        .magazine-card {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+            border: 1px solid #f1f5f9;
+        }
+    </style>
+</head>
+<body class="flex">
+<!-- 侧边栏 -->
+<aside class="w-64 min-h-screen bg-white border-r border-slate-200 flex flex-col fixed left-0 top-0">
+<div class="p-8 border-b border-slate-50">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-3xl" icon="fluent-emoji:tea"></iconify-icon>
+<span class="text-xl font-bold text-red-800 tracking-tight">闽韵优选</span>
+</div>
+</div>
+<nav class="flex-1 p-4 space-y-2 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="dashboard.html">
+<iconify-icon class="text-xl" icon="solar:home-smile-bold-duotone"></iconify-icon>
+<span class="font-medium">控制台概览</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 sidebar-active rounded-xl transition-all" href="admin-orders.html">
+<iconify-icon class="text-xl" icon="solar:cart-large-4-bold-duotone"></iconify-icon>
+<span class="font-medium">订单管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="warehouse-management.html">
+<iconify-icon class="text-xl" icon="solar:box-bold-duotone"></iconify-icon>
+<span class="font-medium">商品仓库</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="add-product.html">
+<iconify-icon class="text-xl" icon="solar:add-circle-bold-duotone"></iconify-icon>
+<span class="font-medium">添加商品</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="#">
+<iconify-icon class="text-xl" icon="solar:users-group-rounded-bold-duotone"></iconify-icon>
+<span class="font-medium">会员管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="#">
+<iconify-icon class="text-xl" icon="solar:graph-bold-duotone"></iconify-icon>
+<span class="font-medium">营收分析</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-50">
+<div class="bg-red-50 p-4 rounded-2xl">
+<p class="text-xs text-red-700 font-bold mb-1">管理员: 陈嘉庚</p>
+<p class="text-[10px] text-red-600/70">上次登录: 2026-03-27 09:15</p>
+</div>
+<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="admin-login.html">
+<iconify-icon class="text-xl" icon="solar:logout-3-bold-duotone"></iconify-icon>
+<span class="font-medium">安全退出</span>
+</a>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="ml-64 flex-1 min-h-screen p-8">
+<!-- 头部 -->
+<header class="flex justify-between items-center mb-8">
+<div>
+<h1 class="text-2xl font-bold text-slate-800">订单中心</h1>
+<p class="text-slate-500 text-sm mt-1">管理并跟进您的福建特产销售动态</p>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center bg-white rounded-full magazine-card text-slate-600 hover:text-red-700 transition-colors relative">
+<iconify-icon class="text-xl" icon="solar:bell-bing-bold-duotone"></iconify-icon>
+<span class="absolute top-2 right-2 w-2 h-2 bg-red-600 rounded-full border-2 border-white"></span>
+</button>
+<div class="h-10 w-[1px] bg-slate-200"></div>
+<div class="flex items-center gap-3 bg-white p-1 pr-4 rounded-full magazine-card">
+<img alt="Admin Avatar" class="w-8 h-8 rounded-full" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/598593f47e884e858842503f5879e4fb.jpg"/>
+<span class="text-sm font-semibold text-slate-700">陈主管</span>
+</div>
+</div>
+</header>
+<!-- 统计看板 -->
+<section class="grid grid-cols-4 gap-6 mb-8">
+<div class="bg-white p-6 rounded-3xl magazine-card group hover:border-red-200 transition-all">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 bg-red-50 text-red-700 rounded-2xl flex items-center justify-center transition-colors group-hover:bg-red-700 group-hover:text-white">
+<iconify-icon class="text-2xl" icon="solar:clock-circle-bold-duotone"></iconify-icon>
+</div>
+<div>
+<p class="text-sm text-slate-500 font-medium">待处理订单</p>
+<h3 class="text-2xl font-bold text-slate-800">24</h3>
+</div>
+</div>
+<div class="text-xs text-red-600 font-semibold bg-red-50 px-2 py-1 rounded inline-flex items-center gap-1">
+<iconify-icon icon="solar:arrow-right-up-bold"></iconify-icon>
+                    12% 较昨日上升
+                </div>
+</div>
+<div class="bg-white p-6 rounded-3xl magazine-card hover:border-blue-200 transition-all">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 bg-blue-50 text-blue-700 rounded-2xl flex items-center justify-center">
+<iconify-icon class="text-2xl" icon="solar:delivery-bold-duotone"></iconify-icon>
+</div>
+<div>
+<p class="text-sm text-slate-500 font-medium">今日已发货</p>
+<h3 class="text-2xl font-bold text-slate-800">156</h3>
+</div>
+</div>
+<p class="text-xs text-slate-400">平均配送时长: 24.5h</p>
+</div>
+<div class="bg-white p-6 rounded-3xl magazine-card hover:border-green-200 transition-all">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 bg-green-50 text-green-700 rounded-2xl flex items-center justify-center">
+<iconify-icon class="text-2xl" icon="solar:wallet-money-bold-duotone"></iconify-icon>
+</div>
+<div>
+<p class="text-sm text-slate-500 font-medium">今日成交额</p>
+<h3 class="text-2xl font-bold text-slate-800">￥42,890</h3>
+</div>
+</div>
+<div class="text-xs text-green-600 font-semibold bg-green-50 px-2 py-1 rounded inline-flex items-center gap-1">
+<iconify-icon icon="solar:arrow-right-up-bold"></iconify-icon>
+                    5.2% 较上周平均
+                </div>
+</div>
+<div class="bg-white p-6 rounded-3xl magazine-card hover:border-amber-200 transition-all">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 bg-amber-50 text-amber-700 rounded-2xl flex items-center justify-center">
+<iconify-icon class="text-2xl" icon="solar:user-heart-bold-duotone"></iconify-icon>
+</div>
+<div>
+<p class="text-sm text-slate-500 font-medium">好评率</p>
+<h3 class="text-2xl font-bold text-slate-800">99.2%</h3>
+</div>
+</div>
+<p class="text-xs text-slate-400">基于近30天评价</p>
+</div>
+</section>
+<!-- 筛选与列表 -->
+<section class="bg-white rounded-3xl magazine-card overflow-hidden">
+<!-- 筛选条 -->
+<div class="p-6 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex bg-slate-50 p-1 rounded-xl">
+<button data-status="all" class="filter-tab px-6 py-2 rounded-lg text-sm font-bold bg-white shadow-sm text-red-700">全部</button>
+<button data-status="pending" class="filter-tab px-6 py-2 rounded-lg text-sm font-medium text-slate-500 hover:text-red-700 transition-colors relative">
+                        待处理
+                        <span class="ml-1 bg-red-600 text-white text-[10px] px-1.5 py-0.5 rounded-full">24</span>
+</button>
+<button data-status="shipped" class="filter-tab px-6 py-2 rounded-lg text-sm font-medium text-slate-500 hover:text-red-700 transition-colors">已发货</button>
+<button data-status="done" class="filter-tab px-6 py-2 rounded-lg text-sm font-medium text-slate-500 hover:text-red-700 transition-colors">已完成</button>
+</div>
+<div class="flex items-center gap-3 w-full md:w-auto">
+<div class="relative flex-1 md:w-80">
+<iconify-icon class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" icon="solar:magnifer-linear"></iconify-icon>
+<input class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-red-600/20 outline-none" placeholder="输入客户姓名或联系电话查询..." id="orderSearch" type="text"/>
+</div>
+<button class="flex items-center gap-2 px-4 py-2.5 bg-slate-800 text-white rounded-xl text-sm font-medium hover:bg-slate-900 transition-colors">
+<iconify-icon icon="solar:filter-linear"></iconify-icon>
+<span>高级筛选</span>
+</button>
+</div>
+</div>
+<!-- 数据表格 -->
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-slate-50/50 text-slate-500 text-xs font-bold uppercase tracking-wider">
+<th class="px-8 py-4">订单编号</th>
+<th class="px-6 py-4">下单时间</th>
+<th class="px-6 py-4">客户信息</th>
+<th class="px-6 py-4">商品摘要</th>
+<th class="px-6 py-4">总金额</th>
+<th class="px-6 py-4">配送方式</th>
+<th class="px-6 py-4">状态</th>
+<th class="px-6 py-4 text-center">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50 text-sm">
+<!-- 订单 1 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-5 font-bold text-slate-700">#ORD-20260327001</td>
+<td class="px-6 py-5 text-slate-500">2026-03-27 10:24</td>
+<td class="px-6 py-5">
+<div class="font-bold text-slate-700">林先生</div>
+<div class="text-xs text-slate-400">138****8899</div>
+</td>
+<td class="px-6 py-5">
+<span class="truncate max-w-[150px] inline-block text-slate-600">武夷岩茶大红袍特级罐装...</span>
+</td>
+<td class="px-6 py-5 font-bold text-red-700">￥1,280.00</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 text-blue-600">
+<iconify-icon icon="solar:snow-linear"></iconify-icon>
+<span>冷链配送</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-[10px] font-bold">待处理</span>
+</td>
+<td class="px-6 py-5 text-center">
+<a class="inline-flex items-center gap-1 text-red-700 hover:underline font-bold" href="admin-order-detail.html">
+                                    查看详情
+                                </a>
+</td>
+</tr>
+<!-- 订单 2 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-5 font-bold text-slate-700">#ORD-20260327002</td>
+<td class="px-6 py-5 text-slate-500">2026-03-27 10:15</td>
+<td class="px-6 py-5">
+<div class="font-bold text-slate-700">王女士</div>
+<div class="text-xs text-slate-400">150****6622</div>
+</td>
+<td class="px-6 py-5">
+<span class="truncate max-w-[150px] inline-block text-slate-600">古田级干银耳 500g*2</span>
+</td>
+<td class="px-6 py-5 font-bold text-red-700">￥298.00</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 text-slate-600">
+<iconify-icon icon="solar:shop-linear"></iconify-icon>
+<span>门店自取</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-[10px] font-bold">待处理</span>
+</td>
+<td class="px-6 py-5 text-center">
+<a class="inline-flex items-center gap-1 text-red-700 hover:underline font-bold" href="admin-order-detail.html">
+                                    查看详情
+                                </a>
+</td>
+</tr>
+<!-- 订单 3 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-5 font-bold text-slate-700">#ORD-20260326098</td>
+<td class="px-6 py-5 text-slate-500">2026-03-26 18:45</td>
+<td class="px-6 py-5">
+<div class="font-bold text-slate-700">张德发</div>
+<div class="text-xs text-slate-400">133****1234</div>
+</td>
+<td class="px-6 py-5">
+<span class="truncate max-w-[150px] inline-block text-slate-600">宁德大黄鱼 (礼盒装)</span>
+</td>
+<td class="px-6 py-5 font-bold text-red-700">￥456.00</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 text-blue-600">
+<iconify-icon icon="solar:snow-linear"></iconify-icon>
+<span>冷链配送</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold">已发货</span>
+</td>
+<td class="px-6 py-5 text-center">
+<a class="inline-flex items-center gap-1 text-red-700 hover:underline font-bold" href="admin-order-detail.html">
+                                    查看详情
+                                </a>
+</td>
+</tr>
+<!-- 更多订单模拟 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-5 font-bold text-slate-700">#ORD-20260326090</td>
+<td class="px-6 py-5 text-slate-500">2026-03-26 15:20</td>
+<td class="px-6 py-5"><div class="font-bold text-slate-700">陈小雨</div><div class="text-xs text-slate-400">189****0011</div></td>
+<td class="px-6 py-5"><span class="truncate max-w-[150px] inline-block text-slate-600">福州同利肉燕 250g*4袋</span></td>
+<td class="px-6 py-5 font-bold text-red-700">￥168.00</td>
+<td class="px-6 py-5"><div class="flex items-center gap-2 text-slate-600"><iconify-icon icon="solar:shop-linear"></iconify-icon><span>门店自取</span></div></td>
+<td class="px-6 py-5"><span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold">已完成</span></td>
+<td class="px-6 py-5 text-center"><a class="inline-flex items-center gap-1 text-red-700 hover:underline font-bold" href="admin-order-detail.html">查看详情</a></td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-5 font-bold text-slate-700">#ORD-20260326085</td>
+<td class="px-6 py-5 text-slate-500">2026-03-26 14:10</td>
+<td class="px-6 py-5"><div class="font-bold text-slate-700">李华</div><div class="text-xs text-slate-400">135****4455</div></td>
+<td class="px-6 py-5"><span class="truncate max-w-[150px] inline-block text-slate-600">连江鲍鱼 即食礼盒 8只装</span></td>
+<td class="px-6 py-5 font-bold text-red-700">￥388.00</td>
+<td class="px-6 py-5"><div class="flex items-center gap-2 text-blue-600"><iconify-icon icon="solar:snow-linear"></iconify-icon><span>冷链配送</span></div></td>
+<td class="px-6 py-5"><span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold">已完成</span></td>
+<td class="px-6 py-5 text-center"><a class="inline-flex items-center gap-1 text-red-700 hover:underline font-bold" href="admin-order-detail.html">查看详情</a></td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-5 font-bold text-slate-700">#ORD-20260326080</td>
+<td class="px-6 py-5 text-slate-500">2026-03-26 11:30</td>
+<td class="px-6 py-5"><div class="font-bold text-slate-700">郑先生</div><div class="text-xs text-slate-400">137****9911</div></td>
+<td class="px-6 py-5"><span class="truncate max-w-[150px] inline-block text-slate-600">厦门黄金香肉松 500g</span></td>
+<td class="px-6 py-5 font-bold text-red-700">￥85.00</td>
+<td class="px-6 py-5"><div class="flex items-center gap-2 text-slate-600"><iconify-icon icon="solar:shop-linear"></iconify-icon><span>门店自取</span></div></td>
+<td class="px-6 py-5"><span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold">已完成</span></td>
+<td class="px-6 py-5 text-center"><a class="inline-flex items-center gap-1 text-red-700 hover:underline font-bold" href="admin-order-detail.html">查看详情</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- 分页 -->
+<div class="p-6 border-t border-slate-50 flex items-center justify-between">
+<p class="text-xs text-slate-400">显示第 1 到 8 条，共 1,280 条记录</p>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center bg-slate-50 text-slate-400 rounded-lg hover:bg-slate-100 transition-colors"><iconify-icon icon="solar:alt-arrow-left-linear"></iconify-icon></button>
+<button class="w-8 h-8 flex items-center justify-center bg-red-700 text-white rounded-lg font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center bg-white text-slate-500 border border-slate-100 rounded-lg hover:bg-slate-50 transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center bg-white text-slate-500 border border-slate-100 rounded-lg hover:bg-slate-50 transition-colors">3</button>
+<button class="w-8 h-8 flex items-center justify-center bg-white text-slate-500 border border-slate-100 rounded-lg hover:bg-slate-50 transition-colors">...</button>
+<button class="w-8 h-8 flex items-center justify-center bg-slate-50 text-slate-400 rounded-lg hover:bg-slate-100 transition-colors"><iconify-icon icon="solar:alt-arrow-right-linear"></iconify-icon></button>
+</div>
+</div>
+</section>
+</main>
+
+<script>
+// Filter tabs
+var tabs=document.querySelectorAll('.filter-tab');
+var rows=document.querySelectorAll('tbody tr');
+tabs.forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var status=this.dataset.status;
+    tabs.forEach(function(b){
+      b.className='filter-tab px-6 py-2 rounded-lg text-sm font-medium text-slate-500 hover:text-red-700 transition-colors';
+    });
+    this.className='filter-tab px-6 py-2 rounded-lg text-sm font-bold bg-white shadow-sm text-red-700';
+    var visible=0;
+    rows.forEach(function(row){
+      if(status==='all'){row.style.display='';visible++;}
+      else{
+        var badge=row.querySelector('span[class*="rounded-full"]');
+        var txt=badge?badge.textContent.trim():'';
+        var match=(status==='pending'&&txt==='待处理')||(status==='shipped'&&txt==='已发货')||(status==='done'&&txt==='已完成');
+        row.style.display=match?'':'none';
+        if(match)visible++;
+      }
+    });
+    var info=document.querySelector('.text-xs.text-slate-400');
+    if(info)info.textContent='找到 '+visible+' 条记录';
+  });
+});
+// Live search
+var search=document.getElementById('orderSearch');
+if(search){
+  search.addEventListener('input',function(){
+    var q=this.value.toLowerCase();
+    var visible=0;
+    rows.forEach(function(row){
+      var show=!q||row.textContent.toLowerCase().includes(q);
+      row.style.display=show?'':'none';
+      if(show)visible++;
+    });
+    var info=document.querySelector('.text-xs.text-slate-400');
+    if(info)info.textContent='找到 '+visible+' 条记录';
+  });
+}
+// Quick confirm button on pending rows
+rows.forEach(function(row){
+  var badge=row.querySelector('span[class*="rounded-full"]');
+  if(badge&&badge.textContent.trim()==='待处理'){
+    var actionCell=row.querySelector('td:last-child');
+    if(actionCell){
+      var confirmBtn=document.createElement('button');
+      confirmBtn.className='ml-2 text-xs text-green-600 font-bold hover:underline';
+      confirmBtn.textContent='快速确认';
+      confirmBtn.addEventListener('click',function(e){
+        e.preventDefault();
+        badge.textContent='已确认';badge.className='px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-[10px] font-bold';
+        this.remove();
+        showOrderToast('✓ 订单已快速确认');
+      });
+      actionCell.appendChild(confirmBtn);
+    }
+  }
+});
+function showOrderToast(msg){
+  var t=document.getElementById('oToast');
+  if(!t){t=document.createElement('div');t.id='oToast';t.style.cssText='position:fixed;top:1.5rem;right:1.5rem;z-index:9999;padding:.75rem 1.25rem;border-radius:.75rem;background:#15803d;color:#fff;font-weight:700;font-size:.85rem;opacity:0;transition:all .3s;pointer-events:none;';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  setTimeout(function(){t.style.opacity='0';},2500);
+}
+</script>
+</body>
+</html>

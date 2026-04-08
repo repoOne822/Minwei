@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>手工福州鱼丸 - 闽味到家</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<style>
+.toast{position:fixed;bottom:6rem;left:50%;transform:translateX(-50%) translateY(20px);background:#15803d;color:#fff;padding:.6rem 1.4rem;border-radius:9999px;font-size:.85rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.thumb-img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:.75rem;cursor:pointer;border:2px solid transparent;transition:border-color .2s;}
+.thumb-img.active{border-color:#B72126;}
+.thumb-img.inactive{opacity:.55;}
+</style>
+</head>
+<body class="bg-[#FFFBF0] text-slate-800 font-sans">
+<div id="toast" class="toast">✓ 已加入购物车</div>
+<nav class="bg-white/80 backdrop-blur-md border-b border-orange-100 sticky top-0 z-50">
+  <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+    <a class="flex items-center gap-2 font-bold" href="products.html">
+      <iconify-icon class="text-2xl md:hidden" icon="lucide:arrow-left"></iconify-icon>
+      <span class="text-xl font-bold tracking-tight hidden md:inline">闽味到家</span>
+    </a>
+    <div class="flex items-center gap-4">
+      <button class="p-2"><iconify-icon class="text-xl" icon="lucide:share-2"></iconify-icon></button>
+      <a class="p-2 relative" href="cart.html">
+        <iconify-icon class="text-xl" icon="lucide:shopping-cart"></iconify-icon>
+        <span id="cartBadge" class="absolute top-1 right-1 bg-[#B72126] text-white text-[10px] w-4 h-4 rounded-full items-center justify-center font-bold hidden">0</span>
+      </a>
+    </div>
+  </div>
+</nav>
+<main class="max-w-6xl mx-auto px-4 py-6 md:py-12 pb-24 md:pb-12">
+  <div class="grid md:grid-cols-2 gap-10">
+    <!-- 产品主图 -->
+    <div>
+      <img id="mainImg" alt="手工福州鱼丸" class="w-full aspect-square object-cover rounded-3xl shadow-lg mb-4" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/880cb9160c1d4f719b2fe54f862d5e30.jpg"/>
+      <div class="grid grid-cols-4 gap-3">
+        <img class="thumb-img active" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/880cb9160c1d4f719b2fe54f862d5e30.jpg" alt="图1"/>
+        <img class="thumb-img inactive" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/fa88935499f2442b830c1c56edb6d64d.jpg" alt="图2"/>
+        <img class="thumb-img inactive" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/93694d85b93c4f9e97c0d3046cfd12c4.jpg" alt="图3"/>
+        <img class="thumb-img inactive" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/1ba455962e3b45bf96c44424afd5f61f.jpg" alt="图4"/>
+      </div>
+    </div>
+    <!-- 产品信息 -->
+    <div class="flex flex-col">
+      <div class="mb-6">
+        <span class="text-[#B72126] text-sm font-bold bg-red-50 px-2 py-1 rounded">福州传统名吃</span>
+        <h1 class="text-3xl font-bold mt-4 mb-2">手工福州鱼丸 (超大号)</h1>
+        <p class="text-slate-500 leading-relaxed">源自福州塔巷古法制作，精选东海深海鳗鱼剁浆，内嵌秘制黑猪肉馅。皮厚有弹性，馅足且多汁。</p>
+      </div>
+      <div class="flex items-baseline gap-4 mb-8">
+        <span class="text-4xl font-bold text-[#B72126]">$18.50</span>
+        <span class="text-gray-400 line-through">$22.00</span>
+        <span class="text-orange-600 text-sm font-bold bg-orange-50 px-2 py-1 rounded">限时 8.5 折</span>
+      </div>
+      <!-- 配送选项 -->
+      <div class="space-y-4 mb-8">
+        <p class="font-bold text-sm">选择配送方式:</p>
+        <div class="grid grid-cols-2 gap-4">
+          <label id="labelCold" class="border-2 border-[#B72126] bg-red-50 rounded-xl p-4 cursor-pointer flex items-center gap-3">
+            <input checked class="accent-[#B72126]" name="delivery" type="radio" value="cold"/>
+            <div><p class="text-sm font-bold">冷链配送</p><p class="text-[10px] text-gray-500">24h内直达</p></div>
+          </label>
+          <label id="labelPickup" class="border border-orange-200 bg-white rounded-xl p-4 cursor-pointer flex items-center gap-3">
+            <input class="accent-[#B72126]" name="delivery" type="radio" value="pickup"/>
+            <div><p class="text-sm font-bold">门店自取</p><p class="text-[10px] text-gray-500">免运费</p></div>
+          </label>
+        </div>
+      </div>
+      <!-- 购买操作 -->
+      <div class="flex gap-4 mt-auto">
+        <div class="flex items-center border border-orange-200 rounded-xl px-4 py-3 bg-white gap-2">
+          <button id="btnMinus" class="text-xl font-bold px-1 text-gray-400 hover:text-slate-800" onclick="changeQty(-1)">−</button>
+          <span id="qtyDisplay" class="w-8 text-center font-bold">1</span>
+          <button id="btnPlus" class="text-xl font-bold px-1 text-[#B72126]" onclick="changeQty(1)">+</button>
+        </div>
+        <button onclick="handleAddToCart()" class="flex-1 bg-slate-900 text-white rounded-xl font-bold hover:bg-black transition-colors">加入购物车</button>
+        <a class="flex-1 bg-[#B72126] text-white rounded-xl font-bold flex items-center justify-center hover:bg-red-700 transition-colors shadow-lg shadow-red-100" href="checkout.html">立即下单</a>
+      </div>
+      <!-- 保障提示 -->
+      <div class="grid grid-cols-3 gap-2 mt-8 py-6 border-t border-orange-100">
+        <div class="flex items-center gap-2 text-[10px] text-gray-500"><iconify-icon class="text-orange-500 text-lg" icon="lucide:shield-check"></iconify-icon>100% 正品溯源</div>
+        <div class="flex items-center gap-2 text-[10px] text-gray-500"><iconify-icon class="text-blue-500 text-lg" icon="lucide:thermometer-snowflake"></iconify-icon>全程冷链保鲜</div>
+        <div class="flex items-center gap-2 text-[10px] text-gray-500"><iconify-icon class="text-green-500 text-lg" icon="lucide:rotate-ccw"></iconify-icon>破损包赔付</div>
+      </div>
+    </div>
+  </div>
+  <!-- 详细介绍 Tabs -->
+  <div class="mt-16">
+    <div class="border-b border-orange-100 flex gap-8 mb-8">
+      <button data-tab="detail" class="detail-tab pb-4 border-b-2 border-[#B72126] font-bold text-[#B72126]">产品详情</button>
+      <button data-tab="cook" class="detail-tab pb-4 border-b-2 border-transparent text-gray-400 hover:text-slate-800">烹饪指南</button>
+    </div>
+    <div id="tab-detail" class="tab-panel">
+      <img alt="Craft Process" class="w-full rounded-2xl mb-8" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/1ba455962e3b45bf96c44424afd5f61f.jpg"/>
+      <h3 class="text-xl font-bold text-slate-900 mb-4">来自塔巷老店的坚持</h3>
+      <p class="text-slate-600 mb-6 leading-relaxed">每一颗鱼丸都需要经过三千次以上的捶打，才能形成如此Q弹的口感。我们拒绝添加明胶，所有粘性均来自深海鳗鱼肉本身的蛋白质。包裹在内的是黑猪前腿肉，加入干贝碎，鲜味指数拉满。</p>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div class="bg-white p-4 rounded-xl border border-orange-100"><p class="text-xs text-gray-400">产地</p><p class="font-bold">福建·福州</p></div>
+        <div class="bg-white p-4 rounded-xl border border-orange-100"><p class="text-xs text-gray-400">规格</p><p class="font-bold">500g (约10-12颗)</p></div>
+        <div class="bg-white p-4 rounded-xl border border-orange-100"><p class="text-xs text-gray-400">保质期</p><p class="font-bold">冷冻保存 90 天</p></div>
+      </div>
+    </div>
+    <div id="tab-cook" class="tab-panel hidden">
+      <div class="bg-orange-50 rounded-2xl p-6 border border-orange-100">
+        <h3 class="text-xl font-bold mb-4">🍲 推荐做法</h3>
+        <ol class="space-y-3 text-slate-600 text-sm leading-relaxed list-decimal list-inside">
+          <li>将冷冻鱼丸提前30分钟移至冷藏解冻，或直接冷水下锅。</li>
+          <li>清水烧开后放入鱼丸，中火煮约5-7分钟至鱼丸浮起。</li>
+          <li>可加入线面、青菜，调入生抽、芝麻油和葱花即可享用。</li>
+          <li>也可油炸：180℃油温炸3-4分钟，外皮金黄酥脆，内馅鲜美多汁。</li>
+        </ol>
+        <p class="text-xs text-gray-400 mt-4">💡 小贴士：煮汤时不要过度搅拌，以保持鱼丸完整。</p>
+      </div>
+    </div>
+  </div>
+</main>
+<!-- 底部 Tab (移动端) -->
+<div class="fixed bottom-0 left-0 right-0 bg-white border-t border-orange-100 p-4 flex md:hidden gap-4 z-50">
+  <a class="w-12 h-12 border border-orange-200 rounded-xl flex items-center justify-center" href="cart.html"><iconify-icon class="text-xl" icon="lucide:shopping-cart"></iconify-icon></a>
+  <a class="flex-1 bg-[#B72126] text-white rounded-xl font-bold flex items-center justify-center" href="checkout.html">立即购买 →</a>
+</div>
+<script>
+var cartCount = parseInt(sessionStorage.getItem('mw_cart')||'0');
+var qty = 1;
+updateBadge();
+
+function updateBadge(){var b=document.getElementById('cartBadge');b.textContent=cartCount>99?'99+':cartCount;b.style.display=cartCount===0?'none':'flex';}
+
+function changeQty(d){
+  qty=Math.max(1,Math.min(99,qty+d));
+  document.getElementById('qtyDisplay').textContent=qty;
+  document.getElementById('btnMinus').style.color=qty<=1?'#9ca3af':'#B72126';
+}
+
+function handleAddToCart(){
+  cartCount+=qty;sessionStorage.setItem('mw_cart',cartCount);updateBadge();
+  var t=document.getElementById('toast');t.textContent='✓ 手工鱼丸 ×'+qty+' 已加入购物车';t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2200);
+}
+
+// Thumbnail switching
+document.querySelectorAll('.thumb-img').forEach(function(img){
+  img.addEventListener('click',function(){
+    document.getElementById('mainImg').src=this.src;
+    document.querySelectorAll('.thumb-img').forEach(function(t){t.classList.remove('active');t.classList.add('inactive');});
+    this.classList.remove('inactive');this.classList.add('active');
+  });
+});
+
+// Delivery option highlighting
+document.querySelectorAll('[name="delivery"]').forEach(function(radio){
+  radio.addEventListener('change',function(){
+    document.getElementById('labelCold').className=document.getElementById('labelCold').className.replace(/border-2 border-\[#B72126\] bg-red-50/,'border border-orange-200 bg-white');
+    document.getElementById('labelPickup').className=document.getElementById('labelPickup').className.replace(/border-2 border-\[#B72126\] bg-red-50/,'border border-orange-200 bg-white');
+    if(this.value==='cold'){document.getElementById('labelCold').className=document.getElementById('labelCold').className.replace('border border-orange-200 bg-white','border-2 border-[#B72126] bg-red-50');}
+    else{document.getElementById('labelPickup').className=document.getElementById('labelPickup').className.replace('border border-orange-200 bg-white','border-2 border-[#B72126] bg-red-50');}
+  });
+});
+
+// Tab switching
+document.querySelectorAll('.detail-tab').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var t=this.dataset.tab;
+    document.querySelectorAll('.detail-tab').forEach(function(b){b.className='detail-tab pb-4 border-b-2 border-transparent text-gray-400 hover:text-slate-800';});
+    this.className='detail-tab pb-4 border-b-2 border-[#B72126] font-bold text-[#B72126]';
+    document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.add('hidden');});
+    document.getElementById('tab-'+t).classList.remove('hidden');
+  });
+});
+</script>
+</body></html>

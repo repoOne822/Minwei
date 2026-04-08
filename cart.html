@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>购物车 - 闽味到家</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+</head>
+<body class="bg-[#FFFBF0] text-slate-800 font-sans min-h-screen">
+<nav class="bg-white border-b border-orange-100 h-16 flex items-center px-4 sticky top-0 z-50">
+  <a class="flex items-center gap-2 font-bold text-sm" href="products.html"><iconify-icon icon="lucide:chevron-left"></iconify-icon>继续购物</a>
+  <span class="mx-auto font-bold text-lg">购物车</span>
+  <div class="w-24"></div>
+</nav>
+<main class="max-w-4xl mx-auto px-4 py-8">
+  <!-- 商品列表 -->
+  <div class="bg-white rounded-3xl shadow-sm overflow-hidden mb-6" id="cartList">
+    <div class="p-5 border-b border-orange-50 flex gap-4 items-center" id="item-0">
+      <img class="w-20 h-20 object-cover rounded-xl flex-shrink-0" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/93694d85b93c4f9e97c0d3046cfd12c4.jpg" alt="鱼丸"/>
+      <div class="flex-1 min-w-0">
+        <h3 class="font-bold mb-0.5 truncate">手工福州鱼丸 (500g)</h3>
+        <p class="text-xs text-gray-400 mb-2">规格: 大号 / 冷链配送</p>
+        <div class="flex items-center justify-between">
+          <span class="text-[#B72126] font-bold text-lg" id="price-0">$18.50</span>
+          <div class="flex items-center border border-orange-100 rounded-lg h-8">
+            <button onclick="changeItemQty(0,-1)" class="px-3 text-gray-500 hover:text-[#B72126] font-bold">−</button>
+            <span id="qty-0" class="px-2 font-bold text-sm w-6 text-center">1</span>
+            <button onclick="changeItemQty(0,1)" class="px-3 text-[#B72126] hover:text-red-700 font-bold">+</button>
+          </div>
+        </div>
+      </div>
+      <button onclick="removeItem(0)" class="text-gray-300 hover:text-red-500 ml-2 flex-shrink-0"><iconify-icon icon="lucide:x" class="text-lg"></iconify-icon></button>
+    </div>
+    <div class="p-5 border-b border-orange-50 flex gap-4 items-center" id="item-1">
+      <img class="w-20 h-20 object-cover rounded-xl flex-shrink-0" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/df48466cebff4c2e9b3a426419179e61.jpg" alt="肉燕"/>
+      <div class="flex-1 min-w-0">
+        <h3 class="font-bold mb-0.5 truncate">同利肉燕 (250g)</h3>
+        <p class="text-xs text-gray-400 mb-2">规格: 传统工艺</p>
+        <div class="flex items-center justify-between">
+          <span class="text-[#B72126] font-bold text-lg" id="price-1">$28.00</span>
+          <div class="flex items-center border border-orange-100 rounded-lg h-8">
+            <button onclick="changeItemQty(1,-1)" class="px-3 text-gray-500 hover:text-[#B72126] font-bold">−</button>
+            <span id="qty-1" class="px-2 font-bold text-sm w-6 text-center">2</span>
+            <button onclick="changeItemQty(1,1)" class="px-3 text-[#B72126] hover:text-red-700 font-bold">+</button>
+          </div>
+        </div>
+      </div>
+      <button onclick="removeItem(1)" class="text-gray-300 hover:text-red-500 ml-2 flex-shrink-0"><iconify-icon icon="lucide:x" class="text-lg"></iconify-icon></button>
+    </div>
+    <div class="p-5 flex gap-4 items-center" id="item-2">
+      <img class="w-20 h-20 object-cover rounded-xl flex-shrink-0" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/d67a25553b1f4635a2eafcbdddaf75ba.jpg" alt="线面"/>
+      <div class="flex-1 min-w-0">
+        <h3 class="font-bold mb-0.5 truncate">手工线面 (10束)</h3>
+        <p class="text-xs text-gray-400 mb-2">规格: 10束装</p>
+        <div class="flex items-center justify-between">
+          <span class="text-[#B72126] font-bold text-lg" id="price-2">$9.90</span>
+          <div class="flex items-center border border-orange-100 rounded-lg h-8">
+            <button onclick="changeItemQty(2,-1)" class="px-3 text-gray-500 hover:text-[#B72126] font-bold">−</button>
+            <span id="qty-2" class="px-2 font-bold text-sm w-6 text-center">1</span>
+            <button onclick="changeItemQty(2,1)" class="px-3 text-[#B72126] hover:text-red-700 font-bold">+</button>
+          </div>
+        </div>
+      </div>
+      <button onclick="removeItem(2)" class="text-gray-300 hover:text-red-500 ml-2 flex-shrink-0"><iconify-icon icon="lucide:x" class="text-lg"></iconify-icon></button>
+    </div>
+  </div>
+  <!-- 配送偏好 -->
+  <div class="bg-white rounded-3xl p-6 shadow-sm mb-6">
+    <h3 class="font-bold mb-4 flex items-center gap-2"><iconify-icon class="text-orange-600" icon="lucide:truck"></iconify-icon>配送偏好</h3>
+    <div class="space-y-3">
+      <label id="ship-cold" class="flex items-center justify-between p-4 border-2 border-[#B72126] bg-red-50 rounded-2xl cursor-pointer">
+        <div class="flex items-center gap-3">
+          <input checked class="accent-[#B72126]" name="ship" type="radio" value="delivery" onchange="updateShipping(5)"/>
+          <div><p class="text-sm font-bold">湾区冷链送货上门</p><p class="text-xs text-gray-500">满 $49 免运费</p></div>
+        </div>
+        <span class="text-sm font-bold" id="deliveryFeeLabel">$5.00</span>
+      </label>
+      <label id="ship-pickup" class="flex items-center justify-between p-4 border border-orange-100 rounded-2xl cursor-pointer">
+        <div class="flex items-center gap-3">
+          <input class="accent-[#B72126]" name="ship" type="radio" value="pickup" onchange="updateShipping(0)"/>
+          <div><p class="text-sm font-bold">自提 (San Jose 门店)</p><p class="text-xs text-gray-500">2026年3月28日 10:00AM 后</p></div>
+        </div>
+        <span class="text-sm font-bold text-green-600">免费</span>
+      </label>
+    </div>
+  </div>
+  <!-- 结算明细 -->
+  <div class="bg-white rounded-3xl p-6 shadow-sm mb-8">
+    <!-- 优惠码 -->
+    <div class="flex gap-2 mb-6 pb-6 border-b border-orange-50">
+      <input id="couponInput" class="flex-1 border border-orange-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-1 focus:ring-[#B72126]" placeholder="输入优惠码（试试 NEWUSER）" type="text"/>
+      <button onclick="applyCoupon()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-700">应用</button>
+    </div>
+    <div id="couponMsg" class="text-xs mb-4 hidden"></div>
+    <div class="space-y-3 mb-6">
+      <div class="flex justify-between text-gray-500"><span>商品小计</span><span id="subtotalDisplay">$56.40</span></div>
+      <div class="flex justify-between text-gray-500"><span>运费</span><span id="shippingDisplay">$5.00</span></div>
+      <div id="discountRow" class="flex justify-between text-red-500 hidden"><span>优惠码折扣</span><span id="discountDisplay">-$10.00</span></div>
+      <div class="h-px bg-orange-50"></div>
+      <div class="flex justify-between text-xl font-bold"><span>总计</span><span class="text-[#B72126]" id="totalDisplay">$51.40</span></div>
+    </div>
+    <a id="checkoutBtn" class="block w-full bg-[#B72126] text-white text-center py-4 rounded-2xl font-bold shadow-lg shadow-red-200 hover:scale-[1.02] transition-transform" href="checkout.html">去结账</a>
+  </div>
+</main>
+<script>
+var items=[
+  {basePrice:18.50, qty:1, active:true},
+  {basePrice:14.00, qty:2, active:true},
+  {basePrice:9.90,  qty:1, active:true}
+];
+var shippingFee=5;
+var discount=0;
+
+function recalc(){
+  var sub=0;
+  items.forEach(function(item,i){
+    if(!item.active)return;
+    sub+=item.basePrice*item.qty;
+    var p=document.getElementById('price-'+i);
+    if(p)p.textContent='$'+(item.basePrice*item.qty).toFixed(2);
+  });
+  var freeShip=sub>=49;
+  var ship=freeShip?0:shippingFee;
+  document.getElementById('deliveryFeeLabel').textContent=freeShip?'免费':'$'+ship.toFixed(2);
+  document.getElementById('subtotalDisplay').textContent='$'+sub.toFixed(2);
+  document.getElementById('shippingDisplay').textContent=freeShip?'免费':'$'+ship.toFixed(2);
+  var total=sub+ship-discount;
+  document.getElementById('totalDisplay').textContent='$'+Math.max(0,total).toFixed(2);
+  if(freeShip&&shippingFee>0){document.getElementById('shippingDisplay').classList.add('text-green-600');}
+  else{document.getElementById('shippingDisplay').classList.remove('text-green-600');}
+}
+
+function changeItemQty(idx,d){
+  items[idx].qty=Math.max(1,items[idx].qty+d);
+  var el=document.getElementById('qty-'+idx);
+  if(el)el.textContent=items[idx].qty;
+  recalc();
+}
+
+function removeItem(idx){
+  var el=document.getElementById('item-'+idx);
+  if(el){el.style.opacity='0.4';el.style.pointerEvents='none';}
+  items[idx].active=false;items[idx].qty=0;
+  recalc();
+}
+
+function updateShipping(fee){
+  shippingFee=fee;
+  var cold=document.getElementById('ship-cold');
+  var pickup=document.getElementById('ship-pickup');
+  if(fee>0){
+    cold.className='flex items-center justify-between p-4 border-2 border-[#B72126] bg-red-50 rounded-2xl cursor-pointer';
+    pickup.className='flex items-center justify-between p-4 border border-orange-100 rounded-2xl cursor-pointer';
+  } else {
+    pickup.className='flex items-center justify-between p-4 border-2 border-[#B72126] bg-red-50 rounded-2xl cursor-pointer';
+    cold.className='flex items-center justify-between p-4 border border-orange-100 rounded-2xl cursor-pointer';
+  }
+  recalc();
+}
+
+function applyCoupon(){
+  var code=document.getElementById('couponInput').value.trim().toUpperCase();
+  var msg=document.getElementById('couponMsg');
+  var row=document.getElementById('discountRow');
+  msg.classList.remove('hidden');
+  if(code==='NEWUSER'||code==='SPRING10'){
+    discount=10;
+    msg.textContent='✓ 优惠码已生效，立减 $10.00';
+    msg.className='text-xs mb-4 text-green-600';
+    row.classList.remove('hidden');
+    document.getElementById('discountDisplay').textContent='-$10.00';
+    document.getElementById('couponInput').disabled=true;
+  } else {
+    discount=0;row.classList.add('hidden');
+    msg.textContent='× 优惠码无效或已过期';
+    msg.className='text-xs mb-4 text-red-500';
+  }
+  recalc();
+}
+
+recalc();
+</script>
+</body></html>

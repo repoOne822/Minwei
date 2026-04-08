@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>安全结账 - 闽味到家</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+</head>
+<body class="bg-[#FFFBF0] text-slate-800 font-sans min-h-screen">
+<main class="max-w-2xl mx-auto px-4 py-12">
+  <div class="text-center mb-12">
+    <a class="inline-block mb-8" href="index.html">
+      <div class="w-12 h-12 bg-[#B72126] rounded-full flex items-center justify-center mx-auto"><span class="text-white font-bold text-2xl">闽</span></div>
+    </a>
+    <h1 class="text-2xl font-bold">完成您的订单</h1>
+    <p class="text-gray-500 text-sm mt-2">安全加密支付，支持 Stripe</p>
+  </div>
+  <form onsubmit="handleSubmit(event)" class="space-y-8">
+    <!-- 1. 身份验证 -->
+    <section class="bg-white rounded-3xl p-6 shadow-sm border border-orange-100">
+      <h3 class="font-bold mb-4 flex items-center gap-2">
+        <span class="w-6 h-6 bg-slate-900 text-white rounded-full flex items-center justify-center text-[10px]">1</span>
+        快捷登录/注册
+      </h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-2 uppercase">美国/中国手机号</label>
+          <div class="flex gap-2">
+            <select id="areaCode" class="w-20 border border-orange-200 rounded-xl px-3 py-3 text-sm font-bold focus:ring-1 focus:ring-[#B72126] outline-none bg-white">
+              <option>+1</option><option>+86</option>
+            </select>
+            <input id="phoneInput" class="flex-1 border border-orange-200 rounded-xl px-4 py-3 focus:ring-1 focus:ring-[#B72126] outline-none" placeholder="650-000-0000" type="tel"/>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <input id="otpInput" class="flex-1 border border-orange-200 rounded-xl px-4 py-3 focus:ring-1 focus:ring-[#B72126] outline-none" placeholder="输入6位验证码" type="text" maxlength="6"/>
+          <button id="otpBtn" onclick="sendOtp()" type="button" class="px-4 py-3 bg-orange-50 text-orange-700 rounded-xl text-sm font-bold whitespace-nowrap hover:bg-orange-100 transition-colors">获取验证码</button>
+        </div>
+        <p id="otpMsg" class="text-xs text-gray-400 hidden"></p>
+      </div>
+    </section>
+    <!-- 2. 配送详情 -->
+    <section class="bg-white rounded-3xl p-6 shadow-sm border border-orange-100">
+      <h3 class="font-bold mb-4 flex items-center gap-2">
+        <span class="w-6 h-6 bg-slate-900 text-white rounded-full flex items-center justify-center text-[10px]">2</span>
+        收货信息
+      </h3>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-2 uppercase">姓名</label>
+          <input id="nameInput" class="w-full border border-orange-200 rounded-xl px-4 py-3 focus:ring-1 focus:ring-[#B72126] outline-none" placeholder="收货人姓名" type="text"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-2 uppercase">联系电话</label>
+          <input id="phoneInput2" class="w-full border border-orange-200 rounded-xl px-4 py-3 focus:ring-1 focus:ring-[#B72126] outline-none" placeholder="联系电话" type="tel"/>
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-gray-500 mb-2 uppercase">详细地址 (湾区全境冷链配送)</label>
+        <textarea id="addressInput" class="w-full border border-orange-200 rounded-xl px-4 py-3 focus:ring-1 focus:ring-[#B72126] outline-none resize-none" placeholder="Street, City, Zip Code" rows="2"></textarea>
+      </div>
+      <div class="mt-4 p-4 bg-orange-50 rounded-xl border border-dashed border-orange-200">
+        <p class="text-[10px] text-orange-800 leading-relaxed font-medium">
+          <iconify-icon class="inline-block mr-1" icon="lucide:info"></iconify-icon>
+          冷链提示：我们将于每周二、周五统一配送。请确保收货时家中有人或门口有阴凉处存放。
+        </p>
+      </div>
+    </section>
+    <!-- 3. 支付方式 -->
+    <section class="bg-white rounded-3xl p-6 shadow-sm border border-orange-100">
+      <h3 class="font-bold mb-4 flex items-center gap-2">
+        <span class="w-6 h-6 bg-slate-900 text-white rounded-full flex items-center justify-center text-[10px]">3</span>
+        支付信息
+      </h3>
+      <div class="flex gap-4 mb-6">
+        <button id="btnStripe" type="button" onclick="selectPayment('stripe')" class="flex-1 py-3 border-2 border-[#B72126] rounded-xl flex items-center justify-center gap-2 bg-red-50">
+          <iconify-icon class="text-2xl" icon="logos:stripe"></iconify-icon>
+        </button>
+        <button id="btnApple" type="button" onclick="selectPayment('apple')" class="flex-1 py-3 border border-orange-100 rounded-xl flex items-center justify-center gap-2 grayscale opacity-50" title="需要 Safari 浏览器">
+          <iconify-icon class="text-2xl" icon="logos:apple-pay"></iconify-icon>
+        </button>
+      </div>
+      <div id="stripeForm" class="space-y-0">
+        <div class="border border-orange-200 rounded-xl overflow-hidden">
+          <input id="cardNum" class="w-full px-4 py-4 border-b border-orange-100 outline-none text-sm" placeholder="卡号 (1234 5678 9012 3456)" type="text" maxlength="19"/>
+          <div class="flex">
+            <input id="cardExp" class="w-1/2 px-4 py-4 border-r border-orange-100 outline-none text-sm" placeholder="MM / YY" type="text" maxlength="7"/>
+            <input id="cardCvc" class="w-1/2 px-4 py-4 outline-none text-sm" placeholder="CVC" type="password" maxlength="4"/>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-2 mt-4">
+        <input id="couponField" class="flex-1 border border-orange-200 rounded-xl px-4 py-2 text-sm outline-none" placeholder="优惠码" type="text"/>
+        <button type="button" onclick="applyCoupon()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-700">应用</button>
+      </div>
+      <p id="couponMsg2" class="text-xs mt-2 hidden"></p>
+    </section>
+    <div class="pt-2">
+      <button id="submitBtn" type="submit" class="w-full bg-[#B72126] text-white py-5 rounded-3xl font-bold text-lg shadow-xl shadow-red-200 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+        <iconify-icon icon="lucide:lock"></iconify-icon>
+        确认支付 $51.40
+      </button>
+      <p class="text-center text-[10px] text-gray-400 mt-4">点击支付即代表您同意我们的《服务条款》与《隐私声明》</p>
+    </div>
+  </form>
+</main>
+<script>
+var otpTimer=null;
+var otpSent=false;
+
+function sendOtp(){
+  var phone=document.getElementById('phoneInput').value.trim();
+  if(!phone){alert('请先输入手机号');return;}
+  var btn=document.getElementById('otpBtn');
+  var msg=document.getElementById('otpMsg');
+  btn.disabled=true;btn.textContent='发送中...';
+  setTimeout(function(){
+    otpSent=true;
+    var secs=60;
+    msg.textContent='✓ 验证码已发送至 '+document.getElementById('areaCode').value+' '+phone;
+    msg.classList.remove('hidden');
+    var interval=setInterval(function(){
+      secs--;
+      btn.textContent='重新发送 ('+secs+'s)';
+      if(secs<=0){clearInterval(interval);btn.disabled=false;btn.textContent='获取验证码';}
+    },1000);
+  },800);
+}
+
+function selectPayment(type){
+  var stripe=document.getElementById('btnStripe');
+  var apple=document.getElementById('btnApple');
+  if(type==='stripe'){
+    stripe.className='flex-1 py-3 border-2 border-[#B72126] rounded-xl flex items-center justify-center gap-2 bg-red-50';
+    apple.className='flex-1 py-3 border border-orange-100 rounded-xl flex items-center justify-center gap-2 grayscale opacity-50';
+  } else {
+    apple.className='flex-1 py-3 border-2 border-[#B72126] rounded-xl flex items-center justify-center gap-2 bg-red-50 grayscale-0 opacity-100';
+    stripe.className='flex-1 py-3 border border-orange-100 rounded-xl flex items-center justify-center gap-2 opacity-60';
+  }
+}
+
+function applyCoupon(){
+  var code=document.getElementById('couponField').value.trim().toUpperCase();
+  var msg=document.getElementById('couponMsg2');
+  msg.classList.remove('hidden');
+  if(code==='NEWUSER'||code==='SPRING10'){
+    msg.textContent='✓ 优惠码已生效，立减 $10.00';
+    msg.className='text-xs mt-2 text-green-600';
+    document.getElementById('couponField').disabled=true;
+    document.getElementById('submitBtn').textContent='';
+    document.getElementById('submitBtn').innerHTML='<iconify-icon icon="lucide:lock"></iconify-icon> 确认支付 $41.40';
+  } else {
+    msg.textContent='× 优惠码无效或已过期';
+    msg.className='text-xs mt-2 text-red-500';
+  }
+}
+
+// Card number formatting
+document.getElementById('cardNum').addEventListener('input',function(){
+  var v=this.value.replace(/\D/g,'').substring(0,16);
+  this.value=v.replace(/(.{4})/g,'$1 ').trim();
+});
+document.getElementById('cardExp').addEventListener('input',function(){
+  var v=this.value.replace(/\D/g,'').substring(0,4);
+  if(v.length>=3)v=v.substring(0,2)+' / '+v.substring(2);
+  this.value=v;
+});
+
+function handleSubmit(e){
+  e.preventDefault();
+  var btn=document.getElementById('submitBtn');
+  btn.disabled=true;
+  btn.innerHTML='<iconify-icon icon="lucide:loader-2"></iconify-icon> 支付处理中...';
+  setTimeout(function(){window.location.href='success.html';},1800);
+}
+</script>
+</body></html>

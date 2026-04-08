@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>管理员登录 - 福建名优特产管理系统</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        .login-gradient {
+            background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+<div class="flex w-full max-w-4xl bg-white rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-red-100/50 border border-slate-100">
+<!-- 左侧：品牌展示 -->
+<div class="hidden md:flex md:w-1/2 login-gradient p-12 flex-col justify-between text-white relative overflow-hidden">
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-8">
+<iconify-icon class="text-4xl" icon="fluent-emoji:tea"></iconify-icon>
+<span class="text-2xl font-bold tracking-wider text-white">闽韵优选</span>
+</div>
+<h1 class="text-4xl font-extrabold leading-tight mb-4">福建特产<br/>智慧订单管理</h1>
+<p class="text-red-100/80 leading-relaxed">让闽地之味，跨越山海，连接每一位食客。</p>
+</div>
+<div class="relative z-10 space-y-4">
+<div class="flex items-center gap-3 text-sm">
+<iconify-icon icon="heroicons:shield-check-solid"></iconify-icon>
+<span>2026年企业级安全加密</span>
+</div>
+<p class="text-xs text-red-200/60">© 2026 福建名优特产电商平台 版权所有</p>
+</div>
+<!-- 装饰元素 -->
+<div class="absolute -bottom-10 -right-10 opacity-20 transform rotate-12">
+<iconify-icon class="text-[200px] text-white" icon="mingcute:department-line"></iconify-icon>
+</div>
+</div>
+<!-- 右侧：登录表单 -->
+<div class="w-full md:w-1/2 p-12 flex flex-col justify-center">
+<div class="mb-10 text-center md:text-left">
+<h2 class="text-3xl font-bold text-slate-800 mb-2">欢迎回来</h2>
+<p class="text-slate-500">请输入管理员凭据以进入系统</p>
+</div>
+<form id="loginForm" class="space-y-6">
+<div>
+<label class="block text-sm font-semibold text-slate-700 mb-2">管理员账号</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
+<iconify-icon icon="heroicons:user-16-solid"></iconify-icon>
+</span>
+<input class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all text-slate-700" placeholder="账号/手机号" readonly="" type="text" value="admin_fj01"/>
+</div>
+</div>
+<div>
+<div class="flex justify-between mb-2">
+<label class="text-sm font-semibold text-slate-700">密码</label>
+<a class="text-xs text-red-700 hover:text-red-800 transition-colors" href="#">忘记密码？</a>
+</div>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
+<iconify-icon icon="heroicons:lock-closed-16-solid"></iconify-icon>
+</span>
+<input class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all text-slate-700" placeholder="请输入密码" readonly="" type="password" value="********"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<input checked="" class="w-4 h-4 text-red-700 border-slate-300 rounded focus:ring-red-600" id="remember" type="checkbox"/>
+<label class="text-sm text-slate-600" for="remember">保持登录 30 天</label>
+</div>
+<button class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-red-700/20 transform transition-all active:scale-[0.98]" type="submit">
+                    立即登录
+                </button>
+</form>
+<div class="mt-8 pt-8 border-t border-slate-100 flex justify-center gap-6">
+<button class="flex items-center gap-2 text-sm text-slate-500 hover:text-red-700 transition-colors">
+<iconify-icon class="text-lg" icon="logos:google-icon"></iconify-icon>
+<span>SSO登录</span>
+</button>
+<button class="flex items-center gap-2 text-sm text-slate-500 hover:text-red-700 transition-colors">
+<iconify-icon class="text-lg text-green-500" icon="ri:wechat-fill"></iconify-icon>
+<span>微信工作台</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+document.getElementById('loginForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  var btn=this.querySelector('button[type=submit]');
+  var user=this.querySelector('input[type=text]').value;
+  var pass=this.querySelector('input[type=password]').value;
+  // Any password accepted for demo
+  if(!user){alert('请输入账号');return;}
+  btn.textContent='登录中...';btn.disabled=true;
+  setTimeout(function(){window.location.href='dashboard.html';},900);
+});
+</script>
+</body>
+</html>

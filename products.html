@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>所有产品 - 闽味到家</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<style>
+.toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%) translateY(20px);background:#15803d;color:#fff;padding:.6rem 1.4rem;border-radius:9999px;font-size:.85rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.no-scrollbar::-webkit-scrollbar{display:none;}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none;}
+.product-card{transition:opacity .25s,transform .25s;}
+.product-card.hidden-card{opacity:0;pointer-events:none;position:absolute;}
+</style>
+</head>
+<body class="bg-[#FFFBF0] text-slate-800 font-sans">
+<div id="toast" class="toast">✓ 已加入购物车</div>
+<nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-orange-100">
+  <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+    <a class="flex items-center gap-2" href="index.html">
+      <div class="w-10 h-10 bg-[#B72126] rounded-full flex items-center justify-center"><span class="text-white font-bold text-xl">闽</span></div>
+      <span class="text-xl font-bold tracking-tight">闽味到家</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+      <a class="hover:text-[#B72126]" href="index.html">首页</a>
+      <a class="text-[#B72126]" href="products.html">所有产品</a>
+      <a class="hover:text-[#B72126]" href="#">精选套餐</a>
+      <a class="hover:text-[#B72126]" href="#">冷链说明</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <a class="p-2 hover:bg-orange-50 rounded-full relative" href="cart.html">
+        <iconify-icon class="text-xl" icon="lucide:shopping-cart"></iconify-icon>
+        <span id="cartBadge" class="absolute top-1 right-1 bg-[#B72126] text-white text-[10px] w-4 h-4 rounded-full items-center justify-center font-bold hidden">0</span>
+      </a>
+    </div>
+  </div>
+</nav>
+<!-- 筛选 Tab -->
+<div class="bg-white border-b border-orange-100 sticky top-16 z-40">
+  <div class="max-w-6xl mx-auto px-4 flex gap-6 overflow-x-auto no-scrollbar">
+    <button data-filter="all" class="filter-tab py-4 border-b-2 border-[#B72126] text-[#B72126] font-bold whitespace-nowrap">全部单品</button>
+    <button data-filter="combo" class="filter-tab py-4 border-b-2 border-transparent text-gray-500 font-medium hover:text-[#B72126] whitespace-nowrap">精选套餐 (推荐)</button>
+    <button data-filter="fresh" class="filter-tab py-4 border-b-2 border-transparent text-gray-500 font-medium hover:text-[#B72126] whitespace-nowrap">生鲜冷冻</button>
+    <button data-filter="dry" class="filter-tab py-4 border-b-2 border-transparent text-gray-500 font-medium hover:text-[#B72126] whitespace-nowrap">山珍干货</button>
+    <button data-filter="pastry" class="filter-tab py-4 border-b-2 border-transparent text-gray-500 font-medium hover:text-[#B72126] whitespace-nowrap">传统糕点</button>
+  </div>
+</div>
+<main class="max-w-6xl mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="text-2xl font-bold">全部商品 <span class="text-sm font-normal text-gray-400 ml-2" id="productCount">找到 6 件商品</span></h1>
+    <div class="flex items-center gap-2 text-sm text-gray-500">
+      <span>排序:</span>
+      <select class="bg-transparent border-none focus:ring-0 cursor-pointer text-slate-800 font-bold outline-none">
+        <option>默认排序</option><option>销量最高</option><option>价格从低到高</option>
+      </select>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8" id="productGrid">
+    <!-- Product 1 -->
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow" data-cat="fresh">
+      <a class="block" href="product-detail.html"><img alt="Fishballs" class="w-full h-48 object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/93694d85b93c4f9e97c0d3046cfd12c4.jpg"/></a>
+      <div class="p-4">
+        <div class="flex items-center gap-1 mb-1 text-[10px] font-bold text-orange-600 uppercase"><iconify-icon class="text-xs" icon="lucide:award"></iconify-icon>老店传承</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126]" href="product-detail.html">手工大号鱼丸 (500g)</a>
+        <p class="text-xs text-gray-500 mb-4 line-clamp-1">福州三坊七巷名店直供，口口劲道</p>
+        <div class="flex items-center justify-between"><span class="text-xl font-bold text-[#B72126]">$18.50</span><button onclick="addToCart(this,'手工鱼丸')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:shopping-cart"></iconify-icon></button></div>
+      </div>
+    </div>
+    <!-- Product 2 -->
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow" data-cat="fresh">
+      <a class="block" href="product-detail.html"><img alt="Rouyan" class="w-full h-48 object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/df48466cebff4c2e9b3a426419179e61.jpg"/></a>
+      <div class="p-4">
+        <div class="flex items-center gap-1 mb-1 text-[10px] font-bold text-orange-600 uppercase"><iconify-icon class="text-xs" icon="lucide:award"></iconify-icon>经典闽味</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126]" href="product-detail.html">同利肉燕 (250g)</a>
+        <p class="text-xs text-gray-500 mb-4 line-clamp-1">薄如蝉翼的皮，浓郁的肉香</p>
+        <div class="flex items-center justify-between"><span class="text-xl font-bold text-[#B72126]">$14.00</span><button onclick="addToCart(this,'同利肉燕')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:shopping-cart"></iconify-icon></button></div>
+      </div>
+    </div>
+    <!-- Product 3 combo -->
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow ring-2 ring-orange-200" data-cat="combo">
+      <a class="block" href="product-detail.html"><img alt="Gift Combo" class="w-full h-48 object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/5f39605547fd49de9727ea206bbe65b2.jpg"/></a>
+      <div class="p-4">
+        <div class="flex items-center gap-1 mb-1 text-[10px] font-bold text-red-600 uppercase"><iconify-icon class="text-xs" icon="lucide:trending-up"></iconify-icon>本周推荐</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126]" href="product-detail.html">家乡早餐礼包 (3件套)</a>
+        <p class="text-xs text-gray-500 mb-4 line-clamp-1">含鱼丸、线面、花生酱，一解乡愁</p>
+        <div class="flex items-center justify-between"><span class="text-xl font-bold text-[#B72126]">$29.90</span><button onclick="addToCart(this,'家乡早餐礼包')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:shopping-cart"></iconify-icon></button></div>
+      </div>
+    </div>
+    <!-- Product 4 dry goods -->
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow" data-cat="dry">
+      <a class="block" href="product-detail.html"><img alt="Noodles" class="w-full h-48 object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/d67a25553b1f4635a2eafcbdddaf75ba.jpg"/></a>
+      <div class="p-4">
+        <div class="flex items-center gap-1 mb-1 text-[10px] font-bold text-gray-500 uppercase"><iconify-icon class="text-xs" icon="lucide:clock"></iconify-icon>常备干货</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126]" href="product-detail.html">福州手工线面 (10束)</a>
+        <p class="text-xs text-gray-500 mb-4 line-clamp-1">久煮不断，口感细腻，全家都爱</p>
+        <div class="flex items-center justify-between"><span class="text-xl font-bold text-[#B72126]">$9.90</span><button onclick="addToCart(this,'手工线面')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:shopping-cart"></iconify-icon></button></div>
+      </div>
+    </div>
+    <!-- Product 5 pastry -->
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow" data-cat="pastry">
+      <a class="block" href="product-detail.html"><img alt="Rice Cake" class="w-full h-48 object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/aebf5e702e034964869358151776c8f0.jpg"/></a>
+      <div class="p-4">
+        <div class="flex items-center gap-1 mb-1 text-[10px] font-bold text-orange-600 uppercase">节日限定</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126]" href="product-detail.html">手工红糖年糕</a>
+        <p class="text-xs text-gray-500 mb-4 line-clamp-1">软糯香甜，蒸着吃炸着吃都赞</p>
+        <div class="flex items-center justify-between"><span class="text-xl font-bold text-[#B72126]">$12.50</span><button onclick="addToCart(this,'红糖年糕')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:shopping-cart"></iconify-icon></button></div>
+      </div>
+    </div>
+    <!-- Product 6 dry -->
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow" data-cat="dry">
+      <a class="block" href="product-detail.html"><img alt="Kelp" class="w-full h-48 object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/7bed09e32af14b32ad9f343b8b10a56c.jpg"/></a>
+      <div class="p-4">
+        <div class="flex items-center gap-1 mb-1 text-[10px] font-bold text-blue-600 uppercase">霞浦特产</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126]" href="product-detail.html">霞浦特级海带头</a>
+        <p class="text-xs text-gray-500 mb-4 line-clamp-1">肉厚脆嫩，凉拌或炖汤佳品</p>
+        <div class="flex items-center justify-between"><span class="text-xl font-bold text-[#B72126]">$7.80</span><button onclick="addToCart(this,'霞浦海带头')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:shopping-cart"></iconify-icon></button></div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer class="bg-white border-t border-orange-100 py-10 mt-12">
+  <div class="max-w-6xl mx-auto px-4 text-center"><p class="text-sm text-gray-500">© 2026 闽味到家 - 湾区最正宗的福建味道</p></div>
+</footer>
+<script>
+var cartCount = parseInt(sessionStorage.getItem('mw_cart')||'0');
+updateBadge();
+function updateBadge(){var b=document.getElementById('cartBadge');b.textContent=cartCount>99?'99+':cartCount;b.style.display=cartCount===0?'none':'flex';}
+function addToCart(btn,name){
+  cartCount++;sessionStorage.setItem('mw_cart',cartCount);updateBadge();
+  var orig=btn.innerHTML;btn.innerHTML='<iconify-icon icon="lucide:check"></iconify-icon>';
+  btn.classList.add('bg-green-500');setTimeout(function(){btn.innerHTML=orig;btn.classList.remove('bg-green-500');},1200);
+  var t=document.getElementById('toast');t.textContent='✓ '+name+' 已加入购物车';t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2200);
+}
+// Filter tabs
+var tabs=document.querySelectorAll('.filter-tab');
+var cards=document.querySelectorAll('.product-card');
+tabs.forEach(function(tab){
+  tab.addEventListener('click',function(){
+    var filter=this.dataset.filter;
+    tabs.forEach(function(t){t.classList.remove('border-[#B72126]','text-[#B72126]','font-bold');t.classList.add('border-transparent','text-gray-500','font-medium');});
+    this.classList.add('border-[#B72126]','text-[#B72126]','font-bold');this.classList.remove('border-transparent','text-gray-500','font-medium');
+    var visible=0;
+    cards.forEach(function(c){
+      if(filter==='all'||c.dataset.cat===filter){c.style.display='';visible++;}
+      else{c.style.display='none';}
+    });
+    document.getElementById('productCount').textContent='找到 '+visible+' 件商品';
+  });
+});
+</script>
+</body></html>

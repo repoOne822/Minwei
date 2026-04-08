@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>商品仓库管理 - 闽韵优选福建特产管理系统</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        .sidebar-active {
+            background: #b91c1c;
+            color: white;
+            box-shadow: 0 4px 12px rgba(185, 28, 28, 0.2);
+        }
+        .magazine-card {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+            border: 1px solid #f1f5f9;
+        }
+        .stock-warning {
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+    </style>
+</head>
+<body class="flex">
+<!-- 侧边栏 -->
+<aside class="w-64 min-h-screen bg-white border-r border-slate-200 flex flex-col fixed left-0 top-0">
+<div class="p-8 border-b border-slate-50">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-3xl" icon="fluent-emoji:tea"></iconify-icon>
+<span class="text-xl font-bold text-red-800 tracking-tight">闽韵优选</span>
+</div>
+</div>
+<nav class="flex-1 p-4 space-y-2 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="dashboard.html">
+<iconify-icon class="text-xl" icon="solar:home-smile-bold-duotone"></iconify-icon>
+<span class="font-medium">控制台概览</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="admin-orders.html">
+<iconify-icon class="text-xl" icon="solar:cart-large-4-bold-duotone"></iconify-icon>
+<span class="font-medium">订单管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 sidebar-active rounded-xl transition-all" href="warehouse-management.html">
+<iconify-icon class="text-xl" icon="solar:box-bold-duotone"></iconify-icon>
+<span class="font-medium">商品仓库</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="add-product.html">
+<iconify-icon class="text-xl" icon="solar:add-circle-bold-duotone"></iconify-icon>
+<span class="font-medium">添加商品</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="#">
+<iconify-icon class="text-xl" icon="solar:users-group-rounded-bold-duotone"></iconify-icon>
+<span class="font-medium">会员管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all" href="#">
+<iconify-icon class="text-xl" icon="solar:graph-bold-duotone"></iconify-icon>
+<span class="font-medium">营收分析</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-50">
+<div class="bg-red-50 p-4 rounded-2xl">
+<p class="text-xs text-red-700 font-bold mb-1">管理员: 陈嘉庚</p>
+<p class="text-[10px] text-red-600/70">当前日期: 2026-03-27</p>
+</div>
+<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="admin-login.html">
+<iconify-icon class="text-xl" icon="solar:logout-3-bold-duotone"></iconify-icon>
+<span class="font-medium">安全退出</span>
+</a>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="ml-64 flex-1 min-h-screen p-8">
+<!-- 头部 -->
+<header class="flex justify-between items-center mb-8">
+<div>
+<h1 class="text-2xl font-bold text-slate-800">商品仓库管理</h1>
+<p class="text-slate-500 text-sm mt-1">监控实时库存，处理补货申请，维护特产数据</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 bg-amber-50 text-amber-700 px-4 py-2 rounded-xl border border-amber-100">
+<iconify-icon class="text-xl" icon="solar:danger-bold-duotone"></iconify-icon>
+<span class="text-sm font-bold">2项库存预警</span>
+</div>
+<div class="h-10 w-[1px] bg-slate-200"></div>
+<div class="flex items-center gap-3 bg-white p-1 pr-4 rounded-full magazine-card">
+<img alt="Admin Avatar" class="w-8 h-8 rounded-full" src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin"/>
+<span class="text-sm font-semibold text-slate-700">陈主管</span>
+</div>
+</div>
+</header>
+<!-- 搜索与筛选 -->
+<section class="bg-white p-6 rounded-3xl magazine-card mb-8">
+<div class="flex flex-wrap gap-4 items-center justify-between">
+<div class="flex gap-4 flex-1 min-w-[300px]">
+<div class="relative flex-1">
+<iconify-icon class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" icon="solar:magnifer-linear"></iconify-icon>
+<input class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-red-700/20 transition-all" placeholder="搜索商品名称或ID..." type="text"/>
+</div>
+<select class="bg-slate-50 border-none rounded-xl text-sm px-4 py-2.5 focus:ring-2 focus:ring-red-700/20 transition-all text-slate-600">
+<option value="">全部分类</option>
+<option value="tea">福建名茶</option>
+<option value="seafood">海鲜干货</option>
+<option value="snack">精选零食</option>
+<option value="pastry">传统面点</option>
+</select>
+<select class="bg-slate-50 border-none rounded-xl text-sm px-4 py-2.5 focus:ring-2 focus:ring-red-700/20 transition-all text-slate-600">
+<option value="">状态筛选</option>
+<option value="onsale">在售中</option>
+<option value="outofstock">已缺货</option>
+<option value="offline">已下架</option>
+</select>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-2.5 bg-slate-800 text-white rounded-xl text-sm font-bold hover:bg-slate-900 transition-all flex items-center gap-2">
+<iconify-icon icon="solar:refresh-linear"></iconify-icon>
+                        重置筛选
+                    </button>
+<button class="px-6 py-2.5 bg-red-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-700/20 hover:bg-red-800 transition-all flex items-center gap-2">
+<iconify-icon icon="solar:add-circle-bold"></iconify-icon>
+                        新增商品
+                    </button>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-4 gap-8 mb-8">
+<!-- 批量操作栏 -->
+<div class="col-span-3 bg-white rounded-3xl magazine-card overflow-hidden">
+<div class="p-6 border-b border-slate-50 flex justify-between items-center">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-xl text-red-700" icon="solar:list-bold-duotone"></iconify-icon>
+<h2 class="font-bold text-slate-800">商品库存列表</h2>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-4 py-1.5 border border-slate-200 text-slate-600 rounded-lg text-xs font-bold hover:bg-slate-50" onclick="showWToast('批量修改模式已启用（模拟）')">批量修改库存</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+<th class="px-8 py-4">商品ID &amp; 名称</th>
+<th class="px-6 py-4">类别</th>
+<th class="px-6 py-4">当前库存</th>
+<th class="px-6 py-4">上次补货</th>
+<th class="px-6 py-4">状态</th>
+<th class="px-6 py-4 text-center">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<!-- 商品1 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden">
+<img alt="tea" class="w-full h-full object-cover" src="https://api.dicebear.com/7.x/identicon/svg?seed=tea1"/>
+</div>
+<div>
+<div class="font-bold text-slate-700">武夷岩茶特级大红袍</div>
+<div class="text-[10px] text-slate-400">#PROD-001</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-slate-500">福建名茶</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<span class="font-bold text-slate-700">50</span>
+<span class="text-[10px] text-slate-400">/ 阈值 20</span>
+</div>
+</td>
+<td class="px-6 py-5 text-xs text-slate-400">2026-03-20</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold">在售中</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex justify-center gap-2">
+<button class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" onclick="quickRestock('P001',10)" title="快速补货">
+<iconify-icon icon="solar:box-plus-bold"></iconify-icon>
+</button>
+<button class="p-2 text-slate-400 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
+<iconify-icon icon="solar:pen-new-square-bold"></iconify-icon>
+</button>
+</div>
+</td>
+</tr>
+<!-- 商品2 (预警) -->
+<tr class="hover:bg-slate-50/50 transition-colors bg-amber-50/30">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden">
+<img alt="mushroom" class="w-full h-full object-cover" src="https://api.dicebear.com/7.x/identicon/svg?seed=mushroom"/>
+</div>
+<div>
+<div class="font-bold text-slate-700">古田精品丑耳 250g</div>
+<div class="text-[10px] text-slate-400">#PROD-002</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-slate-500">海鲜干货</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<span class="font-bold text-amber-600">15</span>
+<span class="text-[10px] text-slate-400">/ 阈值 20</span>
+<iconify-icon class="text-amber-500 stock-warning rounded-full" icon="solar:danger-bold"></iconify-icon>
+</div>
+</td>
+<td class="px-6 py-5 text-xs text-slate-400">2026-03-25</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold">在售中</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex justify-center gap-2">
+<button class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" onclick="quickRestock('P002',50)" title="快速补货">
+<iconify-icon icon="solar:box-plus-bold"></iconify-icon>
+</button>
+<button class="p-2 text-slate-400 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
+<iconify-icon icon="solar:pen-new-square-bold"></iconify-icon>
+</button>
+</div>
+</td>
+</tr>
+<!-- 商品3 (缺货) -->
+<tr class="hover:bg-slate-50/50 transition-colors bg-red-50/30">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden">
+<img alt="abalone" class="w-full h-full object-cover" src="https://api.dicebear.com/7.x/identicon/svg?seed=abalone"/>
+</div>
+<div>
+<div class="font-bold text-slate-700">连江鲍鱼 即食礼盒</div>
+<div class="text-[10px] text-slate-400">#PROD-003</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-slate-500">海鲜干货</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<span class="font-bold text-red-600">5</span>
+<span class="text-[10px] text-slate-400">/ 阈值 10</span>
+<iconify-icon class="text-red-600 stock-warning rounded-full" icon="solar:shield-warning-bold"></iconify-icon>
+</div>
+</td>
+<td class="px-6 py-5 text-xs text-slate-400">2026-03-26</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-[10px] font-bold">已缺货</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex justify-center gap-2">
+<button class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" onclick="quickRestock('P003',100)" title="快速补货">
+<iconify-icon icon="solar:box-plus-bold"></iconify-icon>
+</button>
+<button class="p-2 text-slate-400 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
+<iconify-icon icon="solar:pen-new-square-bold"></iconify-icon>
+</button>
+</div>
+</td>
+</tr>
+<!-- 商品4 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden">
+<img alt="meat" class="w-full h-full object-cover" src="https://api.dicebear.com/7.x/identicon/svg?seed=meat"/>
+</div>
+<div>
+<div class="font-bold text-slate-700">厦门黄金香肉松 500g</div>
+<div class="text-[10px] text-slate-400">#PROD-004</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-slate-500">精选零食</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<span class="font-bold text-slate-700">100</span>
+<span class="text-[10px] text-slate-400">/ 阈值 30</span>
+</div>
+</td>
+<td class="px-6 py-5 text-xs text-slate-400">2026-03-15</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold">在售中</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex justify-center gap-2">
+<button class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="快速补货">
+<iconify-icon icon="solar:box-plus-bold"></iconify-icon>
+</button>
+<button class="p-2 text-slate-400 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
+<iconify-icon icon="solar:pen-new-square-bold"></iconify-icon>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- 分页 -->
+<div class="p-6 border-t border-slate-50 flex items-center justify-between">
+<p class="text-xs text-slate-400">显示第 1 到 4 条，共 86 条记录</p>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center bg-slate-50 text-slate-400 rounded-lg hover:bg-slate-100 transition-colors"><iconify-icon icon="solar:alt-arrow-left-linear"></iconify-icon></button>
+<button class="w-8 h-8 flex items-center justify-center bg-red-700 text-white rounded-lg font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center bg-white text-slate-500 border border-slate-100 rounded-lg hover:bg-slate-50 transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center bg-slate-50 text-slate-400 rounded-lg hover:bg-slate-100 transition-colors"><iconify-icon icon="solar:alt-arrow-right-linear"></iconify-icon></button>
+</div>
+</div>
+</div>
+<!-- 补货记录 -->
+<div class="col-span-1 space-y-8">
+<section class="bg-white p-6 rounded-3xl magazine-card">
+<div class="flex items-center gap-2 mb-6">
+<iconify-icon class="text-xl text-red-700" icon="solar:history-bold-duotone"></iconify-icon>
+<h2 class="font-bold text-slate-800">最近补货记录</h2>
+</div>
+<div class="space-y-6 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100">
+<div class="flex gap-4 relative">
+<div class="w-6 h-6 bg-green-100 text-green-700 rounded-full flex items-center justify-center z-10">
+<iconify-icon class="text-xs" icon="solar:check-circle-bold"></iconify-icon>
+</div>
+<div>
+<p class="text-sm text-slate-700 font-bold">连江鲍鱼 +20</p>
+<p class="text-[10px] text-slate-400 mt-1">2026-03-26 14:30 · 陈主管</p>
+</div>
+</div>
+<div class="flex gap-4 relative">
+<div class="w-6 h-6 bg-green-100 text-green-700 rounded-full flex items-center justify-center z-10">
+<iconify-icon class="text-xs" icon="solar:check-circle-bold"></iconify-icon>
+</div>
+<div>
+<p class="text-sm text-slate-700 font-bold">古田银耳 +50</p>
+<p class="text-[10px] text-slate-400 mt-1">2026-03-25 10:15 · 林工</p>
+</div>
+</div>
+<div class="flex gap-4 relative">
+<div class="w-6 h-6 bg-green-100 text-green-700 rounded-full flex items-center justify-center z-10">
+<iconify-icon class="text-xs" icon="solar:check-circle-bold"></iconify-icon>
+</div>
+<div>
+<p class="text-sm text-slate-700 font-bold">厦门肉松 +100</p>
+<p class="text-[10px] text-slate-400 mt-1">2026-03-20 09:45 · 王经理</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-3 bg-slate-50 text-slate-600 rounded-xl text-sm font-bold hover:bg-slate-100 transition-colors">查看全部记录</button>
+</section>
+<!-- 库存统计概览 -->
+<section class="bg-gradient-to-br from-red-600 to-red-800 p-6 rounded-3xl text-white">
+<h3 class="font-bold mb-4 flex items-center gap-2">
+<iconify-icon icon="solar:chart-2-bold"></iconify-icon>
+                        库存概览
+                    </h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white/10 p-3 rounded-2xl">
+<p class="text-[10px] opacity-70">总品类</p>
+<p class="text-xl font-bold">86</p>
+</div>
+<div class="bg-white/10 p-3 rounded-2xl">
+<p class="text-[10px] opacity-70">总库存量</p>
+<p class="text-xl font-bold">4,280</p>
+</div>
+<div class="bg-white/10 p-3 rounded-2xl">
+<p class="text-[10px] opacity-70">预警中</p>
+<p class="text-xl font-bold text-amber-300">2</p>
+</div>
+<div class="bg-white/10 p-3 rounded-2xl">
+<p class="text-[10px] opacity-70">已缺货</p>
+<p class="text-xl font-bold text-red-200">1</p>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<script>
+// Restock handler
+function quickRestock(productId, amount) {
+  var row=document.querySelector('[data-pid="'+productId+'"]');
+  if(!row)return;
+  var stockEl=row.querySelector('.stock-count');
+  if(stockEl){
+    var cur=parseInt(stockEl.textContent.replace(/[^0-9]/g,''))||0;
+    var next=cur+amount;
+    stockEl.textContent=next;
+    // Remove warning styles if back in stock
+    var warn=row.querySelector('.stock-warn');
+    if(warn&&next>=10){warn.remove();}
+  }
+  showWToast('✓ 商品 #'+productId+' 已补货 '+amount+' 件');
+}
+
+// Toggle switch handler
+document.querySelectorAll('.stock-toggle').forEach(function(tog){
+  tog.addEventListener('change',function(){
+    var label=this.closest('td')||this.parentElement;
+    var onBadge=label.querySelector('.badge-on');
+    var offBadge=label.querySelector('.badge-off');
+    if(this.checked){
+      if(onBadge)onBadge.style.display='';
+      if(offBadge)offBadge.style.display='none';
+      showWToast('✓ 商品已上架');
+    } else {
+      if(onBadge)onBadge.style.display='none';
+      if(offBadge)offBadge.style.display='';
+      showWToast('商品已下架');
+    }
+  });
+});
+
+// Inline restock prompt on restock buttons
+document.querySelectorAll('.btn-restock').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var pid=this.dataset.pid;
+    var amt=prompt('为商品 #'+pid+' 补货数量：','50');
+    if(amt&&!isNaN(parseInt(amt))){quickRestock(pid,parseInt(amt));}
+  });
+});
+
+function showWToast(msg){
+  var t=document.getElementById('wToast');
+  if(!t){t=document.createElement('div');t.id='wToast';t.style.cssText='position:fixed;top:1.5rem;right:1.5rem;z-index:9999;padding:.75rem 1.25rem;border-radius:.75rem;background:#15803d;color:#fff;font-weight:700;font-size:.85rem;opacity:0;transition:all .3s;pointer-events:none;';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  setTimeout(function(){t.style.opacity='0';},2500);
+}
+
+// Add product page link from header button if present
+var addBtn=document.querySelector('a[href="add-product.html"]');
+if(addBtn){addBtn.addEventListener('click',function(e){window.location.href='add-product.html';});}
+</script>
+</body>
+</html>

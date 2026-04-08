@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>下单成功 - 闽味到家</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<style>
+@keyframes popIn{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.pop-in{animation:popIn .6s ease both;}
+@keyframes fadeUp{0%{transform:translateY(20px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.fade-up{animation:fadeUp .5s ease both;}
+.fade-up.d1{animation-delay:.2s;} .fade-up.d2{animation-delay:.4s;} .fade-up.d3{animation-delay:.6s;}
+</style>
+</head>
+<body class="bg-[#FFFBF0] text-slate-800 font-sans min-h-screen flex items-center justify-center px-4">
+<div class="max-w-md w-full py-12 bg-white rounded-[3rem] shadow-2xl shadow-orange-200 text-center relative overflow-hidden">
+  <div class="absolute -top-12 -left-12 w-40 h-40 bg-orange-50 rounded-full blur-3xl"></div>
+  <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-red-50 rounded-full blur-3xl"></div>
+  <div class="relative z-10 px-8">
+    <!-- 成功图标 -->
+    <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8 pop-in">
+      <iconify-icon class="text-5xl text-green-600" icon="lucide:check-circle-2"></iconify-icon>
+    </div>
+    <h1 class="text-3xl font-extrabold mb-3 fade-up">下单成功！</h1>
+    <p class="text-slate-500 mb-8 px-2 fade-up d1">
+      您的订单 <span class="text-slate-900 font-bold">#MW20260407-0128</span> 已收到。鲜味即将启程！
+    </p>
+    <!-- 配送状态卡片 -->
+    <div class="bg-orange-50 rounded-3xl p-6 text-left mb-8 border border-orange-100 fade-up d2">
+      <div class="flex items-start gap-3 mb-4">
+        <iconify-icon class="text-orange-600 mt-1 text-lg flex-shrink-0" icon="lucide:truck"></iconify-icon>
+        <div>
+          <p class="font-bold text-sm">冷链配送预估时间</p>
+          <p class="text-xs text-gray-500 mt-1" id="deliveryTime">计算中...</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3">
+        <iconify-icon class="text-[#B72126] mt-1 text-lg flex-shrink-0" icon="lucide:map-pin"></iconify-icon>
+        <div>
+          <p class="font-bold text-sm">收货地址</p>
+          <p class="text-xs text-gray-500 mt-1">1234 Silicon Valley Blvd, San Jose, CA 95131</p>
+        </div>
+      </div>
+    </div>
+    <!-- 操作按钮 -->
+    <div class="space-y-4 fade-up d3">
+      <button class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:scale-[1.02] transition-transform">
+        追踪我的订单
+      </button>
+      <a class="block w-full bg-white border border-orange-200 text-orange-800 py-4 rounded-2xl font-bold hover:bg-orange-50 transition-colors" href="index.html">
+        返回首页再次选购
+      </a>
+    </div>
+    <!-- 倒计时 -->
+    <p id="countdown" class="text-xs text-gray-400 mt-8">5秒后自动返回首页 · <button onclick="cancelRedirect()" class="underline hover:text-slate-600">取消</button></p>
+    <p class="text-[10px] text-gray-300 mt-3">遇到问题？请拨打 24h 客服热线: (408) 555-0199</p>
+  </div>
+</div>
+<script>
+// Delivery time calculation
+function calcDelivery(){
+  var now=new Date();
+  var day=now.getDay(); // 0=Sun
+  var h=now.getHours();
+  var m=now.getMinutes();
+  var deliveryDay,label;
+  // Tue = 2 (order by Sun 23:59), Fri = 5 (order by Wed 23:59)
+  if(day===0||(day===1)||(day===2&&(h<23||(h===23&&m<=59)))){deliveryDay=2;}
+  else if(day<=3&&(day<3||(h<23||(h===23&&m<=59)))){deliveryDay=5;}
+  else{deliveryDay=day<=5?5:9;}// next Tue
+  var days=['日','一','二','三','四','五','六'];
+  var daysToAdd=(deliveryDay-day+7)%7||7;
+  var d=new Date(now);d.setDate(now.getDate()+daysToAdd);
+  var mo=d.getMonth()+1;var dt=d.getDate();
+  document.getElementById('deliveryTime').textContent='预计周'+days[deliveryDay]+' ('+mo+'月'+dt+'日) 14:00 - 18:00';
+}
+calcDelivery();
+
+// Countdown redirect
+var secs=5;var timer;
+var countEl=document.getElementById('countdown');
+function tick(){
+  secs--;
+  countEl.innerHTML=secs+'秒后自动返回首页 · <button onclick="cancelRedirect()" class="underline hover:text-slate-600">取消</button>';
+  if(secs<=0){clearInterval(timer);window.location.href='index.html';}
+}
+timer=setInterval(tick,1000);
+function cancelRedirect(){clearInterval(timer);countEl.textContent='已取消自动跳转';}
+// Clear cart
+sessionStorage.setItem('mw_cart','0');
+</script>
+</body></html>
