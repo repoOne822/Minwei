@@ -6,6 +6,8 @@
 <title>闽味到家 - 正宗福建特产电商</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<script src="cart-utils.js"></script>
+<script src="api.js"></script>
 <style>
 .toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%) translateY(20px);background:#15803d;color:#fff;padding:.6rem 1.4rem;border-radius:9999px;font-size:.85rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -112,11 +114,8 @@
   <div class="max-w-6xl mx-auto px-4 mt-16 pt-8 border-t border-slate-800 text-center text-xs">© 2026 闽味到家 Fuzhou Flavor Food Tech. 保留所有权利。</div>
 </footer>
 <script>
-var cartCount = parseInt(sessionStorage.getItem('mw_cart')||'0');
-updateBadge();
-function updateBadge(){var b=document.getElementById('cartBadge');b.textContent=cartCount>99?'99+':cartCount;b.style.display=cartCount===0?'none':'flex';}
 function addToCart(btn,name){
-  cartCount++;sessionStorage.setItem('mw_cart',cartCount);updateBadge();
+  Cart.add({slug:slug||name,name_zh:name,price:parseFloat(price)||0,qty:1,image_path:imgPath||'images/products/'+(slug||'')+'.jpg'});
   btn.innerHTML='<iconify-icon icon="lucide:check"></iconify-icon>';
   btn.classList.add('bg-green-500','border-green-500','text-white');
   setTimeout(function(){btn.innerHTML='<iconify-icon icon="lucide:plus"></iconify-icon>';btn.classList.remove('bg-green-500','border-green-500','text-white');},1200);

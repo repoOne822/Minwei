@@ -6,6 +6,8 @@
 <title>所有产品 - 闽味到家</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<script src="cart-utils.js"></script>
+<script src="api.js"></script>
 <style>
 .toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%) translateY(20px);background:#15803d;color:#fff;padding:.6rem 1.4rem;border-radius:9999px;font-size:.85rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -411,11 +413,8 @@
   <div class="max-w-6xl mx-auto px-4 text-center"><p class="text-sm text-gray-500">© 2026 闽味到家 - 湾区最正宗的福建味道</p></div>
 </footer>
 <script>
-var cartCount=parseInt(sessionStorage.getItem('mw_cart')||'0');
-updateBadge();
-function updateBadge(){var b=document.getElementById('cartBadge');b.textContent=cartCount>99?'99+':cartCount;b.style.display=cartCount===0?'none':'flex';}
-function addToCart(btn,name){
-  cartCount++;sessionStorage.setItem('mw_cart',cartCount);updateBadge();
+function addToCart(btn,name,slug,price,imgPath,unit){
+  Cart.add({slug:slug||name,name_zh:name,price:parseFloat(price)||0,qty:1,image_path:imgPath||'images/products/'+(slug||'')+'.jpg',unit:unit||null});
   var orig=btn.innerHTML;btn.innerHTML='<iconify-icon icon="lucide:check"></iconify-icon>';
   btn.classList.add('bg-green-500');setTimeout(function(){btn.innerHTML=orig;btn.classList.remove('bg-green-500');},1200);
   var t=document.getElementById('toast');t.textContent='✓ '+name+' 已加入购物车';t.classList.add('show');

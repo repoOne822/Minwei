@@ -63,6 +63,7 @@ app.get('/health', (req, res) => {
     service: '闽味到家 API',
     version: '1.0.0',
     port: PORT,
+    stripe_pk: process.env.STRIPE_PUBLISHABLE_KEY || null,
     time: new Date().toISOString()
   });
 });

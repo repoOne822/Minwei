@@ -6,6 +6,8 @@
 <title>手工福州鱼丸 - 闽味到家</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<script src="cart-utils.js"></script>
+<script src="api.js"></script>
 <style>
 .toast{position:fixed;bottom:6rem;left:50%;transform:translateX(-50%) translateY(20px);background:#15803d;color:#fff;padding:.6rem 1.4rem;border-radius:9999px;font-size:.85rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -123,11 +125,8 @@
   <a class="flex-1 bg-[#B72126] text-white rounded-xl font-bold flex items-center justify-center" href="checkout.html">立即购买 →</a>
 </div>
 <script>
-var cartCount = parseInt(sessionStorage.getItem('mw_cart')||'0');
 var qty = 1;
-updateBadge();
-
-function updateBadge(){var b=document.getElementById('cartBadge');b.textContent=cartCount>99?'99+':cartCount;b.style.display=cartCount===0?'none':'flex';}
+// Badge managed by cart-utils.js
 
 function changeQty(d){
   qty=Math.max(1,Math.min(99,qty+d));
@@ -136,8 +135,13 @@ function changeQty(d){
 }
 
 function handleAddToCart(){
-  cartCount+=qty;sessionStorage.setItem('mw_cart',cartCount);updateBadge();
-  var t=document.getElementById('toast');t.textContent='✓ 手工鱼丸 ×'+qty+' 已加入购物车';t.classList.add('show');
+  // Get slug from URL or use default
+  var slug = new URLSearchParams(window.location.search).get('slug') || 'yu-wan';
+  var name = document.querySelector('h1') ? document.querySelector('h1').textContent.trim() : '商品';
+  var priceEl = document.querySelector('.text-4xl.font-bold');
+  var price = priceEl ? parseFloat(priceEl.textContent.replace('$','')) : 0;
+  Cart.add({slug:slug, name_zh:name, price:price, qty:qty, image_path:'images/products/'+slug+'.jpg'});
+  var t=document.getElementById('toast');t.textContent='✓ '+name+' ×'+qty+' 已加入购物车';t.classList.add('show');
   setTimeout(function(){t.classList.remove('show');},2200);
 }
 
