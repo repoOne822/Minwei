@@ -8,16 +8,19 @@ const helmet  = require('helmet');
 const rateLimit = require('express-rate-limit');
 
 const app  = express();
-const PORT = process.env.PORT || 3463;
+const PORT = process.env.PORT || 3000; // Replit uses process.env.PORT
 
 // ── Security ──────────────────────────────────────────────────
 app.use(helmet({ contentSecurityPolicy: false }));
 
 const corsOrigins = (process.env.CORS_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
+// Always allow Replit dev previews and GitHub Pages
+const alwaysAllow = ['replit.app','replit.dev','repl.co','github.io'];
 app.use(cors({
   origin: (origin, cb) => {
     // Allow requests with no origin (curl, Postman, server-to-server)
     if (!origin) return cb(null, true);
+    if (alwaysAllow.some(function(d){return origin.includes(d);})) return cb(null, true);
     if (corsOrigins.length === 0 || corsOrigins.includes(origin)) return cb(null, true);
     cb(new Error(`CORS blocked: ${origin}`));
   },
@@ -81,6 +84,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n闽味到家 API running on port ${PORT}`);
   console.log(`Health: http://localhost:${PORT}/health`);
+  console.log(`Ping:   http://localhost:${PORT}/ping (use for UptimeRobot keep-alive)`);
   console.log(`Mode: ${process.env.NODE_ENV || 'development'}`);
   console.log(`SMS: ${process.env.SMS_MODE || 'mock'}`);
   console.log(`Stripe: ${process.env.STRIPE_SECRET_KEY ? '✓ configured' : '✗ not set'}\n`);

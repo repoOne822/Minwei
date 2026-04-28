@@ -7,6 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 <script src="https://js.stripe.com/v3/"></script>
+<script src="config.js"></script>
 <script src="cart-utils.js"></script>
 <script src="api.js"></script>
 <style>
@@ -430,8 +431,6 @@ function onPaymentSuccess(orderRes) {
   window.location.href = 'success.html';
 }
 
-// Expose API base for Stripe PK fetch
-MinweiAPI.BASE = MinweiAPI.BASE || 'https://damoyas-mac-mini.tailb141dd.ts.net';
 
 // Pre-fill if logged in
 window.addEventListener('DOMContentLoaded', function() {

@@ -1,0 +1,15 @@
+{
+  "name": "minwei-daojia",
+  "version": "1.0.0",
+  "description": "闽味到家 — Bay Area Fujian Food E-Commerce",
+  "scripts": {
+    "start": "node api/server.js",
+    "dev": "cd api && npx nodemon server.js",
+    "install-api": "cd api && npm install",
+    "postinstall": "cd api && npm install"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["food", "ecommerce", "fujian", "bayarea"]
+}

@@ -2,7 +2,7 @@
 // Drop this in your repo root and include in all pages that need API calls
 // <script src="api.js"></script>
 
-const API_BASE = 'https://damoyas-mac-mini.tailb141dd.ts.net';
+const API_BASE = (window.MINWEI_CONFIG && window.MINWEI_CONFIG.API_BASE) || 'https://minwei-api.replit.app';
 
 const MinweiAPI = {
   // ── Auth ──────────────────────────────────────────────────
@@ -116,4 +116,5 @@ const MinweiAPI = {
   }
 };
 
+MinweiAPI.BASE = API_BASE;
 window.MinweiAPI = MinweiAPI;
