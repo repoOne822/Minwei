@@ -10,8 +10,6 @@
 .toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%) translateY(20px);background:#15803d;color:#fff;padding:.6rem 1.4rem;border-radius:9999px;font-size:.85rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .no-scrollbar::-webkit-scrollbar{display:none;}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none;}
-.product-card{transition:opacity .25s,transform .25s;}
-.product-card.hidden-card{opacity:0;pointer-events:none;position:absolute;}
 </style>
 </head>
 <body class="bg-[#FFFBF0] text-slate-800 font-sans">
@@ -28,102 +26,392 @@
       <a class="hover:text-[#B72126]" href="#">精选套餐</a>
       <a class="hover:text-[#B72126]" href="#">冷链说明</a>
     </div>
-    <div class="flex items-center gap-4">
-      <a class="p-2 hover:bg-orange-50 rounded-full relative" href="cart.html">
-        <iconify-icon class="text-xl" icon="lucide:shopping-cart"></iconify-icon>
-        <span id="cartBadge" class="absolute top-1 right-1 bg-[#B72126] text-white text-[10px] w-4 h-4 rounded-full items-center justify-center font-bold hidden">0</span>
-      </a>
-    </div>
+    <a class="p-2 hover:bg-orange-50 rounded-full relative" href="cart.html">
+      <iconify-icon class="text-xl" icon="lucide:shopping-cart"></iconify-icon>
+      <span id="cartBadge" class="absolute top-1 right-1 bg-[#B72126] text-white text-[10px] w-4 h-4 rounded-full items-center justify-center font-bold hidden">0</span>
+    </a>
   </div>
 </nav>
-<!-- 筛选 Tab -->
+<!-- Filter tabs -->
 <div class="bg-white border-b border-orange-100 sticky top-16 z-40">
-  <div class="max-w-6xl mx-auto px-4 flex gap-6 overflow-x-auto no-scrollbar">
-    <button data-filter="all" class="filter-tab py-4 border-b-2 border-[#B72126] text-[#B72126] font-bold whitespace-nowrap">全部单品</button>
-    <button data-filter="combo" class="filter-tab py-4 border-b-2 border-transparent text-gray-500 font-medium hover:text-[#B72126] whitespace-nowrap">精选套餐 (推荐)</button>
-    <button data-filter="fresh" class="filter-tab py-4 border-b-2 border-transparent text-gray-500 font-medium hover:text-[#B72126] whitespace-nowrap">生鲜冷冻</button>
-    <button data-filter="dry" class="filter-tab py-4 border-b-2 border-transparent text-gray-500 font-medium hover:text-[#B72126] whitespace-nowrap">山珍干货</button>
-    <button data-filter="pastry" class="filter-tab py-4 border-b-2 border-transparent text-gray-500 font-medium hover:text-[#B72126] whitespace-nowrap">传统糕点</button>
+  <div class="max-w-6xl mx-auto px-4 flex gap-2 overflow-x-auto no-scrollbar py-2">
+    <button data-filter="all"    class="filter-tab px-4 py-2 rounded-full text-sm font-bold bg-[#B72126] text-white whitespace-nowrap">全部 (27)</button>
+    <button data-filter="fresh"  class="filter-tab px-4 py-2 rounded-full text-sm font-medium text-gray-500 bg-orange-50 hover:bg-orange-100 whitespace-nowrap">生鲜冷冻</button>
+    <button data-filter="dry"    class="filter-tab px-4 py-2 rounded-full text-sm font-medium text-gray-500 bg-orange-50 hover:bg-orange-100 whitespace-nowrap">山珍干货</button>
+    <button data-filter="pastry" class="filter-tab px-4 py-2 rounded-full text-sm font-medium text-gray-500 bg-orange-50 hover:bg-orange-100 whitespace-nowrap">糕点零食</button>
   </div>
 </div>
 <main class="max-w-6xl mx-auto px-4 py-8">
-  <div class="flex items-center justify-between mb-8">
-    <h1 class="text-2xl font-bold">全部商品 <span class="text-sm font-normal text-gray-400 ml-2" id="productCount">找到 6 件商品</span></h1>
-    <div class="flex items-center gap-2 text-sm text-gray-500">
-      <span>排序:</span>
-      <select class="bg-transparent border-none focus:ring-0 cursor-pointer text-slate-800 font-bold outline-none">
-        <option>默认排序</option><option>销量最高</option><option>价格从低到高</option>
-      </select>
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">全部商品 <span class="text-sm font-normal text-gray-400 ml-2" id="productCount">27 件商品</span></h1>
+    <div class="relative">
+      <iconify-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" icon="lucide:search"></iconify-icon>
+      <input id="orderSearch" class="pl-9 pr-4 py-2 border border-orange-200 rounded-full text-sm outline-none focus:ring-1 focus:ring-[#B72126] w-48" placeholder="搜索商品..." type="text"/>
     </div>
   </div>
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8" id="productGrid">
-    <!-- Product 1 -->
-    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow" data-cat="fresh">
-      <a class="block" href="product-detail.html"><img alt="Fishballs" class="w-full h-48 object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/93694d85b93c4f9e97c0d3046cfd12c4.jpg"/></a>
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6" id="productGrid">
+
+    <!-- FRESH / 生鲜冷冻 -->
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="fresh" data-name="鱼丸">
+      <a href="product-detail.html"><img alt="连江鱼丸" class="w-full h-44 object-cover" src="images/products/yu-wan.jpg"/></a>
       <div class="p-4">
-        <div class="flex items-center gap-1 mb-1 text-[10px] font-bold text-orange-600 uppercase"><iconify-icon class="text-xs" icon="lucide:award"></iconify-icon>老店传承</div>
-        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126]" href="product-detail.html">手工大号鱼丸 (500g)</a>
-        <p class="text-xs text-gray-500 mb-4 line-clamp-1">福州三坊七巷名店直供，口口劲道</p>
-        <div class="flex items-center justify-between"><span class="text-xl font-bold text-[#B72126]">$18.50</span><button onclick="addToCart(this,'手工鱼丸')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:shopping-cart"></iconify-icon></button></div>
+        <div class="text-[10px] font-bold text-[#B72126] mb-1">连江特产 · 热销</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">连江鱼丸 (5lb/80oz)</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">福建连江正宗鱼丸，皮薄弹牙，冷冻直送</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$18.99</span>
+          <button onclick="addToCart(this,'连江鱼丸')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
       </div>
     </div>
-    <!-- Product 2 -->
-    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow" data-cat="fresh">
-      <a class="block" href="product-detail.html"><img alt="Rouyan" class="w-full h-48 object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/df48466cebff4c2e9b3a426419179e61.jpg"/></a>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="fresh" data-name="鳗鱼丸">
+      <a href="product-detail.html"><img alt="鳗鱼丸" class="w-full h-44 object-cover" src="images/products/man-yu-wan.jpg"/></a>
       <div class="p-4">
-        <div class="flex items-center gap-1 mb-1 text-[10px] font-bold text-orange-600 uppercase"><iconify-icon class="text-xs" icon="lucide:award"></iconify-icon>经典闽味</div>
-        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126]" href="product-detail.html">同利肉燕 (250g)</a>
-        <p class="text-xs text-gray-500 mb-4 line-clamp-1">薄如蝉翼的皮，浓郁的肉香</p>
-        <div class="flex items-center justify-between"><span class="text-xl font-bold text-[#B72126]">$14.00</span><button onclick="addToCart(this,'同利肉燕')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:shopping-cart"></iconify-icon></button></div>
+        <div class="text-[10px] font-bold text-orange-600 mb-1">老铺传承</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">鳗鱼丸</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">鲜鳗鱼浆手工制作，Q弹爆汁，闽味正宗</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$14.99</span>
+          <button onclick="addToCart(this,'鳗鱼丸')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
       </div>
     </div>
-    <!-- Product 3 combo -->
-    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow ring-2 ring-orange-200" data-cat="combo">
-      <a class="block" href="product-detail.html"><img alt="Gift Combo" class="w-full h-48 object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/5f39605547fd49de9727ea206bbe65b2.jpg"/></a>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="fresh" data-name="鱼皮饺">
+      <a href="product-detail.html"><img alt="鱼皮饺" class="w-full h-44 object-cover" src="images/products/yu-pi-jiao.jpg"/></a>
       <div class="p-4">
-        <div class="flex items-center gap-1 mb-1 text-[10px] font-bold text-red-600 uppercase"><iconify-icon class="text-xs" icon="lucide:trending-up"></iconify-icon>本周推荐</div>
-        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126]" href="product-detail.html">家乡早餐礼包 (3件套)</a>
-        <p class="text-xs text-gray-500 mb-4 line-clamp-1">含鱼丸、线面、花生酱，一解乡愁</p>
-        <div class="flex items-center justify-between"><span class="text-xl font-bold text-[#B72126]">$29.90</span><button onclick="addToCart(this,'家乡早餐礼包')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:shopping-cart"></iconify-icon></button></div>
+        <div class="text-[10px] font-bold text-orange-600 mb-1">闽味经典</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">鱼皮饺</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">薄如蝉翼鱼皮裹鲜肉馅，汤底绝配</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$12.00</span>
+          <button onclick="addToCart(this,'鱼皮饺')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
       </div>
     </div>
-    <!-- Product 4 dry goods -->
-    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow" data-cat="dry">
-      <a class="block" href="product-detail.html"><img alt="Noodles" class="w-full h-48 object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/d67a25553b1f4635a2eafcbdddaf75ba.jpg"/></a>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="fresh" data-name="小笼包">
+      <a href="product-detail.html"><img alt="小笼包" class="w-full h-44 object-cover" src="images/products/xiao-long-bao.jpg"/></a>
       <div class="p-4">
-        <div class="flex items-center gap-1 mb-1 text-[10px] font-bold text-gray-500 uppercase"><iconify-icon class="text-xs" icon="lucide:clock"></iconify-icon>常备干货</div>
-        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126]" href="product-detail.html">福州手工线面 (10束)</a>
-        <p class="text-xs text-gray-500 mb-4 line-clamp-1">久煮不断，口感细腻，全家都爱</p>
-        <div class="flex items-center justify-between"><span class="text-xl font-bold text-[#B72126]">$9.90</span><button onclick="addToCart(this,'手工线面')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:shopping-cart"></iconify-icon></button></div>
+        <div class="text-[10px] font-bold text-red-600 mb-1">本周推荐</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">手工小笼包</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">皮薄汁多，现包速冻，蒸出来鲜味十足</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$23.00</span>
+          <button onclick="addToCart(this,'手工小笼包')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
       </div>
     </div>
-    <!-- Product 5 pastry -->
-    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow" data-cat="pastry">
-      <a class="block" href="product-detail.html"><img alt="Rice Cake" class="w-full h-48 object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/aebf5e702e034964869358151776c8f0.jpg"/></a>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="fresh" data-name="鳗鱼骨">
+      <a href="product-detail.html"><img alt="鳗鱼骨" class="w-full h-44 object-cover" src="images/products/man-yu-gu.jpg"/></a>
       <div class="p-4">
-        <div class="flex items-center gap-1 mb-1 text-[10px] font-bold text-orange-600 uppercase">节日限定</div>
-        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126]" href="product-detail.html">手工红糖年糕</a>
-        <p class="text-xs text-gray-500 mb-4 line-clamp-1">软糯香甜，蒸着吃炸着吃都赞</p>
-        <div class="flex items-center justify-between"><span class="text-xl font-bold text-[#B72126]">$12.50</span><button onclick="addToCart(this,'红糖年糕')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:shopping-cart"></iconify-icon></button></div>
+        <div class="text-[10px] font-bold text-orange-600 mb-1">煲汤佳品</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">鳗鱼骨</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">炸制酥脆，也可熬出鲜甜浓汤底</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$12.00</span>
+          <button onclick="addToCart(this,'鳗鱼骨')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
       </div>
     </div>
-    <!-- Product 6 dry -->
-    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow" data-cat="dry">
-      <a class="block" href="product-detail.html"><img alt="Kelp" class="w-full h-48 object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-03-27/7bed09e32af14b32ad9f343b8b10a56c.jpg"/></a>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="fresh" data-name="连江老蟶肉">
+      <a href="product-detail.html"><img alt="連江老蟶肉" class="w-full h-44 object-cover" src="images/products/cheng-rou.jpg"/></a>
       <div class="p-4">
-        <div class="flex items-center gap-1 mb-1 text-[10px] font-bold text-blue-600 uppercase">霞浦特产</div>
-        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126]" href="product-detail.html">霞浦特级海带头</a>
-        <p class="text-xs text-gray-500 mb-4 line-clamp-1">肉厚脆嫩，凉拌或炖汤佳品</p>
-        <div class="flex items-center justify-between"><span class="text-xl font-bold text-[#B72126]">$7.80</span><button onclick="addToCart(this,'霞浦海带头')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:shopping-cart"></iconify-icon></button></div>
+        <div class="text-[10px] font-bold text-blue-600 mb-1">连江海鲜</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">連江老蟶肉</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">连江老蟶，鲜甜入味，汤粥两宜</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$12.00</span>
+          <button onclick="addToCart(this,'連江老蟶肉')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
       </div>
     </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="fresh" data-name="新味米粉">
+      <a href="product-detail.html"><img alt="新味米粉" class="w-full h-44 object-cover" src="images/products/xin-wei-mifen.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-orange-600 mb-1">福建特色</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">新味米粉</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">细滑爽口，炒汤皆宜，家常必备</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$16.00</span>
+          <button onclick="addToCart(this,'新味米粉')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DRY / 山珍干货 -->
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="手拉线面">
+      <a href="product-detail.html"><img alt="手拉线面" class="w-full h-44 object-cover" src="images/products/shou-la-xian-mian.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-orange-600 mb-1">福州风味 · 2.5kg</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">福州手拉线面 (2.5kg)</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">手工拉制，细如发丝，久煮不断</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$22.00</span>
+          <button onclick="addToCart(this,'手拉线面')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="闽粉燕">
+      <a href="product-detail.html"><img alt="闽粉燕" class="w-full h-44 object-cover" src="images/products/min-fen-yan.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-orange-600 mb-1">750g · 干面</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">闽粉燕干面 (750g)</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">水磨日晒，手工原态，口感细腻顺滑</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$6.50</span>
+          <button onclick="addToCart(this,'闽粉燕')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="长乐粉丝">
+      <a href="product-detail.html"><img alt="长乐粉丝" class="w-full h-44 object-cover" src="images/products/chang-le-fensi.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-orange-600 mb-1">长乐特产</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">长乐粉丝</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">透明顺滑，吸汤入味，炒拌皆宜</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$7.00</span>
+          <button onclick="addToCart(this,'长乐粉丝')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="羊肚菌">
+      <a href="product-detail.html"><img alt="羊肚菌" class="w-full h-44 object-cover" src="images/products/yang-du-jun.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-green-700 mb-1">山珍精品</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">羊肚菌 (干)</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">形如羊肚，菌香浓郁，炖汤滋补佳品</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$45.00</span>
+          <button onclick="addToCart(this,'羊肚菌')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="黑松露">
+      <a href="product-detail.html"><img alt="黑松露" class="w-full h-44 object-cover" src="images/products/hei-song-lu.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-purple-700 mb-1">高端食材</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">黑松露</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">浓郁土壤香气，搭配意面炒蛋均绝</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$38.00</span>
+          <button onclick="addToCart(this,'黑松露')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="椎茸干香菇">
+      <a href="product-detail.html"><img alt="椎茸干香菇" class="w-full h-44 object-cover" src="images/products/zhui-rong.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-orange-600 mb-1">干货精选</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">椎茸 (干香菇)</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">厚实饱满，泡发后香味四溢，炖汤必备</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$18.00</span>
+          <button onclick="addToCart(this,'椎茸干香菇')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="干香菇">
+      <a href="product-detail.html"><img alt="干香菇" class="w-full h-44 object-cover" src="images/products/gan-xiang-gu.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-orange-600 mb-1">常备干货</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">干香菇</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">自然晒制，香气醇厚，用途广泛</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$12.00</span>
+          <button onclick="addToCart(this,'干香菇')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="云耳干木耳">
+      <a href="product-detail.html"><img alt="云耳干木耳" class="w-full h-44 object-cover" src="images/products/yun-er.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-orange-600 mb-1">云南特产</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">云耳 (干木耳)</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">朵形完整，脆嫩爽口，凉拌炒菜均佳</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$9.50</span>
+          <button onclick="addToCart(this,'云耳干木耳')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="干虫草花">
+      <a href="product-detail.html"><img alt="干虫草花" class="w-full h-44 object-cover" src="images/products/chong-cao-hua.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-yellow-700 mb-1">滋补食材</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">干虫草花</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">花开金黄，炖汤滋补，营养丰富</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$16.00</span>
+          <button onclick="addToCart(this,'干虫草花')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="干海参">
+      <a href="product-detail.html"><img alt="干海参" class="w-full h-44 object-cover" src="images/products/gan-hai-shen.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-blue-700 mb-1">高端海味</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">干海参</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">泡发丰满，胶质丰富，滋补珍品</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$68.00</span>
+          <button onclick="addToCart(this,'干海参')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="笋干">
+      <a href="product-detail.html"><img alt="笋干" class="w-full h-44 object-cover" src="images/products/sun-gan.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-orange-600 mb-1">山珍干货</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">笋干</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">鲜笋自然风干，脆嫩入味，红烧首选</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$11.00</span>
+          <button onclick="addToCart(this,'笋干')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="贡菜">
+      <a href="product-detail.html"><img alt="贡菜" class="w-full h-44 object-cover" src="images/products/gong-cai.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-green-700 mb-1">天然蔬菜</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">贡菜</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">鲜嫩爽脆，凉拌或炒食，清爽可口</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$8.00</span>
+          <button onclick="addToCart(this,'贡菜')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="腐竹">
+      <a href="product-detail.html"><img alt="腐竹" class="w-full h-44 object-cover" src="images/products/fu-zhu.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-orange-600 mb-1">豆制品</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">腐竹</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">豆香浓郁，韧嫩可口，红烧凉拌皆宜</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$7.50</span>
+          <button onclick="addToCart(this,'腐竹')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="桃胶">
+      <a href="product-detail.html"><img alt="桃胶" class="w-full h-44 object-cover" src="images/products/tao-jiao.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-pink-700 mb-1">养颜食材</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">桃胶</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">天然桃树分泌物，养颜润肤，甜汤必备</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$14.00</span>
+          <button onclick="addToCart(this,'桃胶')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="dry" data-name="麒麟果燕窝果">
+      <a href="product-detail.html"><img alt="麒麟果" class="w-full h-44 object-cover" src="images/products/qi-lin-guo.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-pink-600 mb-1">热带珍果</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">麒麟果 (燕窝果)</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">外皮独特，果肉香甜，营养价值极高</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$19.00</span>
+          <button onclick="addToCart(this,'麒麟果')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASTRY / 糕点零食 -->
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="pastry" data-name="芋泥糕">
+      <a href="product-detail.html"><img alt="芋泥糕" class="w-full h-44 object-cover" src="images/products/yu-ni-gao.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-purple-600 mb-1">福建传统</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">芋泥糕</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">槟榔芋制作，细腻香甜，闽南家乡味</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$6.00</span>
+          <button onclick="addToCart(this,'芋泥糕')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="pastry" data-name="芋泥黑米八宝饭">
+      <a href="product-detail.html"><img alt="芋泥黑米八宝饭" class="w-full h-44 object-cover" src="images/products/yu-ni-babao.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-orange-600 mb-1">节庆甜食</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">芋泥黑米八宝饭</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">芋泥搭配黑米八宝，软糯香甜，节日必备</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$9.00</span>
+          <button onclick="addToCart(this,'芋泥黑米八宝饭')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="pastry" data-name="宝莎乌梅干">
+      <a href="product-detail.html"><img alt="宝莎乌梅干" class="w-full h-44 object-cover" src="images/products/wu-mei-gan.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-orange-600 mb-1">开胃零食</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">宝莎乌梅干</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">酸甜适口，生津解渴，零食佳品</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$8.50</span>
+          <button onclick="addToCart(this,'宝莎乌梅干')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="pastry" data-name="干橄榄">
+      <a href="product-detail.html"><img alt="干橄榄" class="w-full h-44 object-cover" src="images/products/gan-gan-lan.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-green-700 mb-1">闽南零食</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">干橄榄</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">回甘绵长，嚼劲十足，越嚼越香</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$7.00</span>
+          <button onclick="addToCart(this,'干橄榄')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all" data-cat="pastry" data-name="脆蜜金桔">
+      <a href="product-detail.html"><img alt="脆蜜金桔" class="w-full h-44 object-cover" src="images/products/cui-mi-jinju.jpg"/></a>
+      <div class="p-4">
+        <div class="text-[10px] font-bold text-yellow-600 mb-1">蜜制零食</div>
+        <a class="block font-bold text-slate-900 mb-1 hover:text-[#B72126] text-sm" href="product-detail.html">脆蜜金桔</a>
+        <p class="text-xs text-gray-500 mb-3 line-clamp-1">金桔蜜渍，香甜酥脆，老少皆宜</p>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-[#B72126]">$9.00</span>
+          <button onclick="addToCart(this,'脆蜜金桔')" class="bg-[#B72126] text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><iconify-icon class="text-sm" icon="lucide:plus"></iconify-icon></button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </main>
 <footer class="bg-white border-t border-orange-100 py-10 mt-12">
   <div class="max-w-6xl mx-auto px-4 text-center"><p class="text-sm text-gray-500">© 2026 闽味到家 - 湾区最正宗的福建味道</p></div>
 </footer>
 <script>
-var cartCount = parseInt(sessionStorage.getItem('mw_cart')||'0');
+var cartCount=parseInt(sessionStorage.getItem('mw_cart')||'0');
 updateBadge();
 function updateBadge(){var b=document.getElementById('cartBadge');b.textContent=cartCount>99?'99+':cartCount;b.style.display=cartCount===0?'none':'flex';}
 function addToCart(btn,name){
@@ -139,15 +427,27 @@ var cards=document.querySelectorAll('.product-card');
 tabs.forEach(function(tab){
   tab.addEventListener('click',function(){
     var filter=this.dataset.filter;
-    tabs.forEach(function(t){t.classList.remove('border-[#B72126]','text-[#B72126]','font-bold');t.classList.add('border-transparent','text-gray-500','font-medium');});
-    this.classList.add('border-[#B72126]','text-[#B72126]','font-bold');this.classList.remove('border-transparent','text-gray-500','font-medium');
+    tabs.forEach(function(t){t.className='filter-tab px-4 py-2 rounded-full text-sm font-medium text-gray-500 bg-orange-50 hover:bg-orange-100 whitespace-nowrap';});
+    this.className='filter-tab px-4 py-2 rounded-full text-sm font-bold bg-[#B72126] text-white whitespace-nowrap';
     var visible=0;
     cards.forEach(function(c){
-      if(filter==='all'||c.dataset.cat===filter){c.style.display='';visible++;}
-      else{c.style.display='none';}
+      var show=filter==='all'||c.dataset.cat===filter;
+      c.style.display=show?'':'none';
+      if(show)visible++;
     });
-    document.getElementById('productCount').textContent='找到 '+visible+' 件商品';
+    document.getElementById('productCount').textContent=visible+' 件商品';
   });
+});
+// Search
+document.getElementById('orderSearch').addEventListener('input',function(){
+  var q=this.value.toLowerCase();
+  var visible=0;
+  cards.forEach(function(c){
+    var show=!q||c.dataset.name.toLowerCase().includes(q)||c.textContent.toLowerCase().includes(q);
+    c.style.display=show?'':'none';
+    if(show)visible++;
+  });
+  document.getElementById('productCount').textContent=visible+' 件商品';
 });
 </script>
 </body></html>
