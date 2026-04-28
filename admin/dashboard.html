@@ -6,6 +6,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>控制台概览 - 福建名优特产管理系统</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="../config.js"></script>
+<script src="admin-auth.js"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
@@ -67,10 +69,10 @@
 </nav>
 <div class="p-4 border-t border-slate-50">
 <div class="bg-red-50 p-4 rounded-2xl">
-<p class="text-xs text-red-700 font-bold mb-1">管理员: 陈嘉庚</p>
+<p class="text-xs text-red-700 font-bold mb-1 admin-username">管理员: ...</p>
 <p class="text-[10px] text-red-600/70">上次登录: <span id="liveClock">2026-04-07 08:30</span></p>
 </div>
-<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="admin-login.html">
+<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="#" onclick="AdminAuth.logout(); return false;">
 <iconify-icon class="text-xl" icon="solar:logout-3-bold-duotone"></iconify-icon>
 <span class="font-medium">安全退出</span>
 </a>
@@ -425,5 +427,46 @@ statNums.forEach(function(el){
   }
 });
 </script>
+
+<script>
+AdminAuth.requireAuth();
+AdminAuth.renderSidebarUser();
+
+async function loadStats() {
+  var data = await AdminAuth.apiFetch('/api/admin/stats');
+  if (!data) return;
+
+  // Update stat cards
+  var s = data.orders || {};
+  var r = data.revenue || {};
+  var cards = document.querySelectorAll('.stat-card');
+
+  // Try to find cards by their label text and update value
+  document.querySelectorAll('.stat-card').forEach(function(card) {
+    var label = card.textContent;
+    var numEl = card.querySelector('.text-3xl,.text-4xl,.text-2xl');
+    if (!numEl) return;
+    if (label.includes('待处理')) numEl.textContent = s.pending || 0;
+    if (label.includes('今日')) numEl.textContent = s.today || 0;
+    if (label.includes('本月') || label.includes('营业额') || label.includes('销售额'))
+      numEl.textContent = '￥' + (r.month || 0).toFixed(2);
+    if (label.includes('库存预警') || label.includes('预警')) numEl.textContent = data.low_stock || 0;
+  });
+
+  // Update chart data if Chart.js is loaded
+  if (window.orderChart && data.trend && data.trend.length) {
+    var labels = data.trend.map(function(t){ return t.day; });
+    var values = data.trend.map(function(t){ return parseFloat(t.revenue); });
+    orderChart.data.labels = labels;
+    orderChart.data.datasets[0].data = values;
+    orderChart.update();
+  }
+}
+
+loadStats();
+// Auto-refresh every 2 minutes
+setInterval(loadStats, 120000);
+</script>
+
 </body>
 </html>

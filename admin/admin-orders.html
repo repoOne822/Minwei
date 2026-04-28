@@ -6,6 +6,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>订单列表 - 福建名优特产管理系统</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="../config.js"></script>
+<script src="admin-auth.js"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 <style>
         body {
@@ -60,10 +62,10 @@
 </nav>
 <div class="p-4 border-t border-slate-50">
 <div class="bg-red-50 p-4 rounded-2xl">
-<p class="text-xs text-red-700 font-bold mb-1">管理员: 陈嘉庚</p>
+<p class="text-xs text-red-700 font-bold mb-1 admin-username">管理员: ...</p>
 <p class="text-[10px] text-red-600/70">上次登录: 2026-03-27 09:15</p>
 </div>
-<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="admin-login.html">
+<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="#" onclick="AdminAuth.logout(); return false;">
 <iconify-icon class="text-xl" icon="solar:logout-3-bold-duotone"></iconify-icon>
 <span class="font-medium">安全退出</span>
 </a>
@@ -383,5 +385,110 @@ function showOrderToast(msg){
   setTimeout(function(){t.style.opacity='0';},2500);
 }
 </script>
+
+<script>
+AdminAuth.requireAuth();
+AdminAuth.renderSidebarUser();
+
+var currentStatus = '';
+
+async function loadOrders(status, search) {
+  var params = new URLSearchParams({ limit: 50 });
+  if (status) params.set('status', status);
+  if (search) params.set('search', search);
+
+  var data = await AdminAuth.apiFetch('/api/admin/orders?' + params.toString());
+  if (!data) return;
+
+  var tbody = document.querySelector('tbody');
+  if (!tbody) return;
+
+  if (!data.orders || data.orders.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-12 text-center text-slate-400 text-sm">暂无订单数据</td></tr>';
+    var info = document.querySelector('.text-xs.text-slate-400');
+    if (info) info.textContent = '找到 0 条记录';
+    return;
+  }
+
+  var statusColors = {
+    'pending_payment':    'bg-orange-100 text-orange-700',
+    'pending_processing': 'bg-blue-100 text-blue-700',
+    'confirmed':          'bg-purple-100 text-purple-700',
+    'shipped':            'bg-cyan-100 text-cyan-700',
+    'completed':          'bg-green-100 text-green-700',
+    'cancelled':          'bg-slate-100 text-slate-500'
+  };
+  var statusNames = {
+    'pending_payment':'待支付','pending_processing':'待处理',
+    'confirmed':'已确认','shipped':'已发货',
+    'completed':'已完成','cancelled':'已取消'
+  };
+
+  tbody.innerHTML = data.orders.map(function(o) {
+    var sc = statusColors[o.status] || 'bg-slate-100 text-slate-500';
+    var sn = statusNames[o.status] || o.status;
+    var date = new Date(o.created_at).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+    var nextBtn = '';
+    if (o.status==='pending_processing') nextBtn = '<button onclick="quickStatus(''+o.id+'','confirmed')" class="text-xs text-green-600 font-bold hover:underline ml-2">快速确认</button>';
+    if (o.status==='confirmed') nextBtn = '<button onclick="quickStatus(''+o.id+'','shipped')" class="text-xs text-blue-600 font-bold hover:underline ml-2">标记发货</button>';
+    return '<tr class="group hover:bg-slate-50/50 cursor-pointer" onclick="window.location='admin-order-detail.html?id='+o.id+''">' +
+      '<td class="px-6 py-4 text-sm font-mono font-bold text-slate-700">'+o.order_number+'</td>' +
+      '<td class="px-6 py-4 text-sm text-slate-600">'+(o.recipient_name||'-')+'<br/><span class="text-xs text-slate-400">'+(o.recipient_phone||o.phone||'')+'</span></td>' +
+      '<td class="px-6 py-4 text-sm font-bold text-red-700">$'+parseFloat(o.total).toFixed(2)+'</td>' +
+      '<td class="px-6 py-4 text-xs text-slate-500">'+date+'</td>' +
+      '<td class="px-6 py-4 text-xs text-slate-500">'+(o.estimated_delivery||'-')+'</td>' +
+      '<td class="px-6 py-4"><span class="px-2 py-1 rounded-full text-[10px] font-bold '+sc+'">'+sn+'</span></td>' +
+      '<td class="px-6 py-4 text-sm" onclick="event.stopPropagation()">'+nextBtn+'</td>' +
+    '</tr>';
+  }).join('');
+
+  var info = document.querySelector('.text-xs.text-slate-400');
+  if (info) info.textContent = '找到 '+data.orders.length+' 条记录 (共'+data.total+')';
+}
+
+async function quickStatus(id, status) {
+  if (!confirm('确认将订单状态更新为: '+status+'?')) return;
+  var res = await AdminAuth.apiFetch('/api/admin/orders/'+id, {
+    method: 'PATCH',
+    body: JSON.stringify({ status: status })
+  });
+  if (res && res.order) {
+    loadOrders(currentStatus);
+    showAdminToast('✓ 状态已更新为 ' + status);
+  }
+}
+
+function showAdminToast(msg) {
+  var t = document.getElementById('oToast');
+  if (!t) { t=document.createElement('div'); t.id='oToast'; t.style.cssText='position:fixed;top:1.5rem;right:1.5rem;z-index:9999;padding:.75rem 1.25rem;border-radius:.75rem;background:#15803d;color:#fff;font-weight:700;font-size:.85rem;opacity:0;transition:all .3s;pointer-events:none;'; document.body.appendChild(t); }
+  t.textContent=msg; t.style.opacity='1';
+  setTimeout(function(){t.style.opacity='0';},2500);
+}
+
+// Wire filter tabs to real API
+document.addEventListener('DOMContentLoaded', function() {
+  loadOrders();
+
+  // Search
+  var search = document.getElementById('orderSearch');
+  if (search) {
+    var debounce;
+    search.addEventListener('input', function() {
+      clearTimeout(debounce);
+      debounce = setTimeout(function(){ loadOrders(currentStatus, search.value); }, 400);
+    });
+  }
+
+  // Filter tabs
+  document.querySelectorAll('.filter-tab').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var statusMap = { 'all':'', 'pending':'pending_processing', 'shipped':'shipped', 'done':'completed' };
+      currentStatus = statusMap[this.dataset.status] || '';
+      loadOrders(currentStatus);
+    });
+  });
+});
+</script>
+
 </body>
 </html>

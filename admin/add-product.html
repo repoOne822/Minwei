@@ -6,6 +6,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>添加商品 - 福建名优特产管理系统</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="../config.js"></script>
+<script src="admin-auth.js"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 <style>
         body {
@@ -66,10 +68,10 @@
 </nav>
 <div class="p-4 border-t border-slate-50">
 <div class="bg-red-50 p-4 rounded-2xl">
-<p class="text-xs text-red-700 font-bold mb-1">管理员: 陈嘉庚</p>
+<p class="text-xs text-red-700 font-bold mb-1 admin-username">管理员: ...</p>
 <p class="text-[10px] text-red-600/70">上次登录: 2026-03-27 09:15</p>
 </div>
-<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="admin-login.html">
+<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="#" onclick="AdminAuth.logout(); return false;">
 <iconify-icon class="text-xl" icon="solar:logout-3-bold-duotone"></iconify-icon>
 <span class="font-medium">安全退出</span>
 </a>
@@ -182,24 +184,50 @@
 </section>
 </main>
 <script>
-        document.getElementById('addProductForm').addEventListener('submit', function(e) {
+        document.getElementById('addProductForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             var btn=this.querySelector('button[type=submit]');
             btn.textContent='提交中...';btn.disabled=true;
-            // Validate required fields
-            var name=this.querySelector('input[placeholder*="肉燕"]');
-            if(name&&!name.value.trim()){
-                btn.textContent='确认添加商品';btn.disabled=false;
-                name.style.borderColor='#b91c1c';name.focus();return;
+
+            var inputs = this.querySelectorAll('input,select,textarea');
+            var formData = {};
+            inputs.forEach(function(el){ if(el.name) formData[el.name] = el.value; });
+
+            // Build product object from form fields
+            var productData = {
+              slug: (formData.name_zh||'').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g,'-').toLowerCase() + '-' + Date.now(),
+              name_zh: formData.name_zh || document.querySelector('input[placeholder*="肉燕"]')?.value || '',
+              name_en: formData.name_en || '',
+              category: document.querySelector('select')?.value || 'dry',
+              description: document.querySelector('textarea')?.value || '',
+              price: parseFloat(document.querySelectorAll('input[type=number]')[1]?.value||0),
+              original_price: parseFloat(document.querySelectorAll('input[type=number]')[0]?.value||0)||null,
+              unit: document.querySelectorAll('input[type=text]')[1]?.value || null,
+              stock: parseInt(document.querySelectorAll('input[type=number]')[0]?.value||0),
+              is_active: document.querySelector('input[name=status][value="在售"]')?.checked !== false
+            };
+
+            if (!productData.name_zh) {
+              alert('请输入商品名称');
+              btn.textContent='确认添加商品';btn.disabled=false;
+              return;
             }
-            setTimeout(function(){
-                // Show success toast then redirect
-                var t=document.createElement('div');
-                t.style.cssText='position:fixed;top:1.5rem;right:1.5rem;z-index:9999;padding:.75rem 1.25rem;border-radius:.75rem;background:#15803d;color:#fff;font-weight:700;font-size:.85rem;';
-                t.textContent='✓ 商品已成功添加并上架';
-                document.body.appendChild(t);
-                setTimeout(function(){window.location.href='warehouse-management.html';},1200);
-            },700);
+
+            var res = await AdminAuth.apiFetch('/api/admin/products', {
+              method: 'POST',
+              body: JSON.stringify(productData)
+            });
+
+            if (res && res.product) {
+              var t=document.createElement('div');
+              t.style.cssText='position:fixed;top:1.5rem;right:1.5rem;z-index:9999;padding:.75rem 1.25rem;border-radius:.75rem;background:#15803d;color:#fff;font-weight:700;font-size:.85rem;';
+              t.textContent='✓ 商品已成功添加并上架';
+              document.body.appendChild(t);
+              setTimeout(function(){window.location.href='warehouse-management.html';},1200);
+            } else {
+              alert('添加失败: '+(res&&res.error||'请重试'));
+              btn.textContent='确认添加商品';btn.disabled=false;
+            }
         });
         // Image upload preview
         var uploadZone=document.querySelector('.border-dashed');
@@ -219,5 +247,6 @@
             });
         }
     </script>
+<script>AdminAuth.requireAuth(); AdminAuth.renderSidebarUser();</script>
 </body>
 </html>

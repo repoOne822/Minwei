@@ -6,6 +6,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>商品仓库管理 - 闽韵优选福建特产管理系统</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="../config.js"></script>
+<script src="admin-auth.js"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 <style>
         body {
@@ -68,10 +70,10 @@
 </nav>
 <div class="p-4 border-t border-slate-50">
 <div class="bg-red-50 p-4 rounded-2xl">
-<p class="text-xs text-red-700 font-bold mb-1">管理员: 陈嘉庚</p>
+<p class="text-xs text-red-700 font-bold mb-1 admin-username">管理员: ...</p>
 <p class="text-[10px] text-red-600/70">当前日期: 2026-03-27</p>
 </div>
-<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="admin-login.html">
+<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="#" onclick="AdminAuth.logout(); return false;">
 <iconify-icon class="text-xl" icon="solar:logout-3-bold-duotone"></iconify-icon>
 <span class="font-medium">安全退出</span>
 </a>
@@ -433,5 +435,82 @@ function showWToast(msg){
 var addBtn=document.querySelector('a[href="add-product.html"]');
 if(addBtn){addBtn.addEventListener('click',function(e){window.location.href='add-product.html';});}
 </script>
+
+<script>
+AdminAuth.requireAuth();
+AdminAuth.renderSidebarUser();
+
+async function loadProducts(filterStatus) {
+  var data = await AdminAuth.apiFetch('/api/admin/products');
+  if (!data) return;
+  var products = data.products || [];
+
+  if (filterStatus === 'active') products = products.filter(function(p){ return p.is_active; });
+  if (filterStatus === 'inactive') products = products.filter(function(p){ return !p.is_active; });
+  if (filterStatus === 'low') products = products.filter(function(p){ return p.stock <= p.stock_alert && p.is_active; });
+
+  var tbody = document.querySelector('tbody');
+  if (!tbody) return;
+
+  if (!products.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center text-slate-400 text-sm">暂无商品</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = products.map(function(p) {
+    var low = p.stock <= p.stock_alert;
+    return '<tr class="'+(low?'bg-red-50/30':'hover:bg-slate-50/50')+'">' +
+      '<td class="px-6 py-4"><div class="flex items-center gap-3"><img class="w-12 h-12 rounded-xl object-cover" src="../'+p.image_path+'" onerror="this.src='https://placehold.co/48'" alt="'+p.name_zh+'"/><div><div class="font-bold text-sm text-slate-800">'+p.name_zh+'</div><div class="text-xs text-slate-400">'+p.slug+'</div></div></div></td>' +
+      '<td class="px-6 py-4 text-sm text-slate-600">'+p.category+'</td>' +
+      '<td class="px-6 py-4 text-sm font-bold text-red-700">$'+parseFloat(p.price).toFixed(2)+'</td>' +
+      '<td class="px-6 py-4"><span class="'+(low?'text-red-600 font-bold':'text-slate-700')+' text-sm stock-count" data-slug="'+p.slug+'">'+p.stock+'</span>'+(low?'<iconify-icon icon="lucide:alert-triangle" class="text-orange-500 ml-1 text-xs inline"></iconify-icon>':'')+' <span class="text-xs text-slate-400">件</span></td>' +
+      '<td class="px-6 py-4"><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer stock-toggle" '+(p.is_active?'checked':'')+' data-slug="'+p.slug+'"/><div class="w-9 h-5 bg-slate-200 peer-checked:bg-green-500 rounded-full after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4"></div></label></td>' +
+      '<td class="px-6 py-4"><div class="flex gap-1"><button onclick="quickRestock(''+p.slug+'')" class="btn-restock px-3 py-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100 font-bold" data-pid="'+p.slug+'">补货</button><a href="add-product.html?slug='+p.slug+'" class="px-3 py-1 text-xs bg-slate-50 text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-100 font-bold">编辑</a></div></td>' +
+    '</tr>';
+  }).join('');
+
+  // Wire toggle switches
+  document.querySelectorAll('.stock-toggle').forEach(function(tog) {
+    tog.addEventListener('change', async function() {
+      var res = await AdminAuth.apiFetch('/api/admin/products/' + this.dataset.slug, {
+        method: 'PATCH',
+        body: JSON.stringify({ is_active: this.checked })
+      });
+      if (res) showWToast(this.checked ? '✓ 商品已上架' : '商品已下架');
+      else { this.checked = !this.checked; }
+    });
+  });
+}
+
+async function quickRestock(slug) {
+  var amt = prompt('为 ' + slug + ' 补货数量：', '50');
+  if (!amt || isNaN(parseInt(amt))) return;
+  var res = await AdminAuth.apiFetch('/api/admin/products/' + slug, {
+    method: 'PATCH',
+    body: JSON.stringify({ stock: parseInt(amt) })
+  });
+  if (res) {
+    var el = document.querySelector('.stock-count[data-slug="'+slug+'"]');
+    if (el) el.textContent = res.product.stock;
+    showWToast('✓ 补货成功，库存更新为 ' + res.product.stock);
+  }
+}
+
+function showWToast(msg) {
+  var t=document.getElementById('wToast');
+  if(!t){t=document.createElement('div');t.id='wToast';t.style.cssText='position:fixed;top:1.5rem;right:1.5rem;z-index:9999;padding:.75rem 1.25rem;border-radius:.75rem;background:#15803d;color:#fff;font-weight:700;font-size:.85rem;opacity:0;transition:all .3s;pointer-events:none;';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  setTimeout(function(){t.style.opacity='0';},2500);
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  loadProducts();
+  // Tab filter
+  document.querySelectorAll('[data-status]').forEach(function(btn) {
+    btn.addEventListener('click', function(){ loadProducts(this.dataset.status); });
+  });
+});
+</script>
+
 </body>
 </html>

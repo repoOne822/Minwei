@@ -6,6 +6,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>订单详情 - 福建名优特产管理系统</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="../config.js"></script>
+<script src="admin-auth.js"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 <style>
         body {
@@ -60,10 +62,10 @@
 </nav>
 <div class="p-4 border-t border-slate-50">
 <div class="bg-red-50 p-4 rounded-2xl">
-<p class="text-xs text-red-700 font-bold mb-1">管理员: 陈嘉庚</p>
+<p class="text-xs text-red-700 font-bold mb-1 admin-username">管理员: ...</p>
 <p class="text-[10px] text-red-600/70">当前日期: 2026-03-27</p>
 </div>
-<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="admin-login.html">
+<a class="mt-4 flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-700 transition-all" href="#" onclick="AdminAuth.logout(); return false;">
 <iconify-icon class="text-xl" icon="solar:logout-3-bold-duotone"></iconify-icon>
 <span class="font-medium">安全退出</span>
 </a>
@@ -342,5 +344,112 @@ function showToast(msg,color){
   setTimeout(function(){t.style.opacity='0';},2500);
 }
 </script>
+
+<script>
+AdminAuth.requireAuth();
+AdminAuth.renderSidebarUser();
+
+var orderId = new URLSearchParams(window.location.search).get('id');
+var currentOrder = null;
+
+async function loadOrder() {
+  if (!orderId) { alert('缺少订单 ID'); history.back(); return; }
+  var data = await AdminAuth.apiFetch('/api/admin/orders/' + orderId);
+  if (!data || !data.order) return;
+  currentOrder = data.order;
+  var o = data.order;
+
+  // Update page title / order number
+  var numEls = document.querySelectorAll('[data-order-number]');
+  numEls.forEach(function(el){ el.textContent = o.order_number; });
+  document.querySelectorAll('h1').forEach(function(el){
+    if (el.textContent.includes('订单详情')) el.nextElementSibling && (el.nextElementSibling.textContent = o.order_number);
+  });
+
+  // Update status badge
+  var badge = document.querySelector('.px-3.py-1.rounded-full.text-xs');
+  if (badge) {
+    var names = {'pending_payment':'待支付','pending_processing':'待处理','confirmed':'已确认',
+                 'shipped':'已发货','completed':'已完成','cancelled':'已取消'};
+    var colors = {'pending_payment':'bg-orange-100 text-orange-700','pending_processing':'bg-red-100 text-red-700',
+                  'confirmed':'bg-purple-100 text-purple-700','shipped':'bg-blue-100 text-blue-700',
+                  'completed':'bg-green-100 text-green-700','cancelled':'bg-slate-100 text-slate-500'};
+    badge.textContent = names[o.status] || o.status;
+    badge.className = 'px-3 py-1 rounded-full text-xs font-bold ' + (colors[o.status]||'bg-slate-100 text-slate-500');
+  }
+
+  // Update recipient info
+  var addr = document.querySelector('.border-l-4.border-blue-500');
+  if (addr && o.recipient_name) {
+    var lines = addr.querySelectorAll('.text-slate-700');
+    if (lines[0]) lines[0].textContent = o.address || '-';
+    var phones = addr.querySelectorAll('.font-bold');
+    phones.forEach(function(el){ if (el.textContent.match(/\d{3}/)) el.textContent = o.recipient_phone||'-'; });
+  }
+
+  // Update order total
+  var totals = document.querySelectorAll('.text-red-700.font-extrabold');
+  totals.forEach(function(el){ if (el.textContent.includes('￥')) el.textContent = '$'+parseFloat(o.total).toFixed(2); });
+
+  // Append real logs
+  if (data.logs && data.logs.length) {
+    var logContainer = document.querySelector('.space-y-6.relative');
+    if (logContainer) {
+      logContainer.innerHTML = data.logs.map(function(log) {
+        var iconMap = {'pending_processing':'lucide:shopping-bag','confirmed':'lucide:check','shipped':'lucide:truck','completed':'lucide:check-circle','cancelled':'lucide:x'};
+        var colorMap = {'confirmed':'bg-green-100 text-green-700','shipped':'bg-blue-100 text-blue-700','completed':'bg-green-100 text-green-700','cancelled':'bg-slate-100 text-slate-500'};
+        var ic = iconMap[log.to_status] || 'lucide:clock';
+        var cl = colorMap[log.to_status] || 'bg-red-100 text-red-700';
+        var ts = new Date(log.created_at).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+        var statusNames = {'pending_payment':'客户下单支付','pending_processing':'待处理','confirmed':'订单已确认','shipped':'标记为已发货','completed':'订单已完成','cancelled':'订单已取消'};
+        return '<div class="flex gap-4 relative">' +
+          '<div class="w-6 h-6 '+cl+' rounded-full flex items-center justify-center z-10"><iconify-icon class="text-xs" icon="'+ic+'"></iconify-icon></div>' +
+          '<div><p class="text-sm text-slate-700 font-bold">'+(statusNames[log.to_status]||log.to_status)+'</p>' +
+          '<p class="text-[10px] text-slate-400 mt-1">'+ts+' · 由 '+(log.operator||'system')+' 操作'+(log.note?' · '+log.note:'')+'</p></div>' +
+        '</div>';
+      }).join('');
+    }
+  }
+
+  // Show/hide action buttons based on status
+  var btnShip = document.getElementById('btnShip');
+  var btnDone = document.getElementById('btnDone');
+  if (btnShip) btnShip.style.display = ['pending_processing','confirmed'].includes(o.status) ? '' : 'none';
+  if (btnDone) btnDone.style.display = ['confirmed','shipped'].includes(o.status) ? '' : 'none';
+}
+
+async function updateStatus(type) {
+  var statusMap = { 'shipped': 'shipped', 'done': 'completed', 'pickup': 'completed' };
+  var newStatus = statusMap[type];
+  if (!newStatus || !orderId) return;
+
+  var tracking_number = null, tracking_company = null;
+  if (type === 'shipped') {
+    tracking_company = prompt('物流公司 (如：顺丰, UPS)') || '';
+    tracking_number  = prompt('运单号') || '';
+  }
+
+  var res = await AdminAuth.apiFetch('/api/admin/orders/' + orderId, {
+    method: 'PATCH',
+    body: JSON.stringify({ status: newStatus, tracking_company, tracking_number })
+  });
+
+  if (res && res.order) {
+    showToast({ shipped:'✓ 已标记为已发货', done:'✓ 订单已完成', pickup:'✓ 已自取' }[type], type);
+    loadOrder();
+  }
+}
+
+function showToast(msg, type) {
+  var t = document.getElementById('adminToast');
+  if (!t) { t=document.createElement('div'); t.id='adminToast'; t.style.cssText='position:fixed;top:1.5rem;right:1.5rem;z-index:9999;padding:.75rem 1.25rem;border-radius:.75rem;color:#fff;font-weight:700;font-size:.85rem;opacity:0;transition:all .3s;pointer-events:none;'; document.body.appendChild(t); }
+  var bg = type==='shipped'?'#1d4ed8':type==='done'?'#15803d':'#7c3aed';
+  t.style.background=bg; t.textContent=msg; t.style.opacity='1';
+  setTimeout(function(){t.style.opacity='0';},2500);
+}
+
+loadOrder();
+</script>
+
 </body>
 </html>
