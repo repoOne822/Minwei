@@ -3,3 +3,8 @@ Thumbs.db
 *.log
 node_modules/
 .env
+
+# API
+api/.env
+api/node_modules/
+api/logs/
